@@ -13,7 +13,7 @@ import retrofit2.http.POST
 interface ChatApis {
     @Headers(
         "Content-Type:application/json",
-        "Authorization:Bearer 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"
+        "Authorization:Bearer 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"
     )
     @POST("v1/completions")
     suspend fun postRequest(@Body jsonData: JsonObject): GptResponse

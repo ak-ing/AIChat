@@ -1,5 +1,6 @@
 package com.txznet.common.utils
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.PointF
@@ -9,6 +10,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.WindowCompat
@@ -45,7 +47,8 @@ fun calculateCIE76Distance(color1: Int, color2: Int): Double {
     val g2 = Color.green(color2)
     val b2 = Color.blue(color2)
     return sqrt(
-        (r1 - r2).toDouble().pow(2.0) + (g1 - g2).toDouble().pow(2.0) + (b1 - b2).toDouble().pow(2.0)
+        (r1 - r2).toDouble().pow(2.0) + (g1 - g2).toDouble().pow(2.0) + (b1 - b2).toDouble()
+            .pow(2.0)
     )
 }
 
@@ -85,9 +88,7 @@ val Any.CLASS_TAG get() = this::class.java.simpleName + ":" + Integer.toHexStrin
  */
 val Number.dp
     get() = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this.toFloat(),
-        Resources.getSystem().displayMetrics
+        TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics
     )
 
 /**
@@ -131,7 +132,8 @@ fun Window.hideSystemUI() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         WindowCompat.getInsetsController(this, decorView).also {
             it.hide(WindowInsetsCompat.Type.systemBars())
-            it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            it.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     } else {
         addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -162,4 +164,10 @@ fun View.centerColor(): Int {
     val bitmap = background.toBitmap()
     return bitmap.getPixel(bitmap.width / 2, bitmap.height / 2)
 }
+
+
+/**
+ * 获取颜色
+ */
+fun Context.getCompatColor(@ColorRes color: Int) = ContextCompat.getColor(this, color)
 

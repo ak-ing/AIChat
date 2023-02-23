@@ -10,90 +10,23 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        topSystemWindowInsets="@{true}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:clipChildren="false">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_history"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:clipChildren="false"
-            app:layout_constraintBottom_toTopOf="@+id/content_guideline"
+            android:layout_height="@dimen/top_app_bar_height"
+            android:background="@color/colorBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/drag_content"
-                topSystemWindowInsets="@{true}"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_input_bg"
-                android:paddingHorizontal="@dimen/top_app_bar_horizontal_padding">
-
-                <ImageView
-                    android:id="@+id/iv_collection"
-                    android:layout_width="@dimen/top_app_bar_icon_size"
-                    android:layout_height="@dimen/top_app_bar_icon_size"
-                    android:src="@mipmap/ic_launcher_round"
-                    app:layout_constraintBottom_toTopOf="@+id/app_bar_guideline"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/iv_user"
-                    android:layout_width="@dimen/top_app_bar_icon_size"
-                    android:layout_height="@dimen/top_app_bar_icon_size"
-                    android:src="@mipmap/ic_launcher_round"
-                    app:layout_constraintBottom_toTopOf="@+id/app_bar_guideline"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_home"
-                    android:textAppearance="?textAppearanceHeadline6"
-                    app:layout_constraintBottom_toTopOf="@+id/app_bar_guideline"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:layout_width="@dimen/min_touch_target_size"
-                    android:layout_height="@dimen/grid_0_5"
-                    android:layout_marginBottom="@dimen/grid_1"
-                    android:background="@drawable/shape_touch_bar"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/app_bar_guideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="@dimen/top_app_bar_height" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar_history"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/top_app_bar_height"
-                android:alpha="0"
-                android:background="@color/reply_blue_100"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:title="@string/title_history" />
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@string/title_home"
+            app:titleTextAppearance="?attr/textAppearanceHeadline6" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/content_guideline"
