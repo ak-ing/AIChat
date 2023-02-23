@@ -49,6 +49,16 @@ fun calculateCIE76Distance(color1: Int, color2: Int): Double {
     )
 }
 
+/**
+ * 获取屏幕高度
+ */
+fun getHeightPixels(): Int = AppGlobal.context.resources.displayMetrics.heightPixels
+
+/**
+ *  获取屏幕宽度
+ */
+fun getWidthPixels(): Int = AppGlobal.context.resources.displayMetrics.widthPixels
+
 fun <T> Any.typeInstance(position: Int): T? {
     val type = this::class.java.genericSuperclass
     if (type is ParameterizedType) {

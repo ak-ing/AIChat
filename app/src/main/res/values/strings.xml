@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">AIChat</string>
+
+    <!--app bar title-->
     <string name="title_home">Home</string>
+    <string name="title_history">历史记录</string>
 </resources>

@@ -22,11 +22,15 @@ class MainViewModel : BaseViewModel<ChatRepository>(ChatRepository()) {
     private val _contentList = MutableLiveData<List<ContentEntity>>()
     val contentLd: LiveData<List<ContentEntity>> get() = _contentList
 
+    init {
+        postResponse("hello! who are you?")
+    }
 
     /**
      * 发送问题
      */
     fun postResponse(query: String) = viewModelScope.launch {
+        Timber.tag("postResponse").v(query)
         val jsonObject = JsonObject().apply {
             addProperty("model", "text-davinci-003")
             addProperty("prompt", query)
@@ -37,10 +41,10 @@ class MainViewModel : BaseViewModel<ChatRepository>(ChatRepository()) {
             addProperty("presence_penalty", 0.0)
         }
         val response = repository.postResponse(jsonObject)
-        Timber.tag("响应结果").v("$response.choices.get(0)")
-        val tempJson = gson.toJson("")
+        Timber.tag("postResponse").v("${response.choices[0]}")
+        val tempJson = gson.toJson(response.choices[0])
         val tempGson = gson.fromJson(tempJson, GptText::class.java)
-        Timber.tag("加工结果").v("$tempGson.text")
+        Timber.tag("postResponse").v("${tempGson.text}")
         //保存数据库
     }
 

@@ -1,5 +1,8 @@
 package com.aking.aichat.network
 
+import com.aking.aichat.model.bean.GptResponse
+import com.google.gson.JsonObject
+import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
@@ -10,8 +13,8 @@ import retrofit2.http.POST
 interface ChatApis {
     @Headers(
         "Content-Type:application/json",
-        "Authorization:Bearer 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"
+        "Authorization:Bearer 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"
     )
     @POST("v1/completions")
-    suspend fun postRequest()
+    suspend fun postRequest(@Body jsonData: JsonObject): GptResponse
 }

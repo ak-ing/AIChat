@@ -9,6 +9,8 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,16 @@ import com.bumptech.glide.RequestBuilder
 /**
  * Binding适配器
  */
+
+@BindingAdapter(value = ["topSystemWindowInsets"], requireAll = false)
+fun View.bindSystemWindowInsets(topInsets: Boolean) {
+    setOnApplyWindowInsetsListener { v, insets ->
+        val top = WindowInsetsCompat.toWindowInsetsCompat(insets, v)
+            .getInsets(WindowInsetsCompat.Type.statusBars()).top
+        if (topInsets) v.updatePadding(top = top)
+        insets
+    }
+}
 
 @BindingAdapter(value = ["selected"], requireAll = false)
 fun View.bindSelect(select: Boolean) {

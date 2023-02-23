@@ -1,8 +1,8 @@
 package com.aking.aichat.model.repository
 
+import com.aking.aichat.model.bean.GptResponse
 import com.aking.aichat.network.ChatApis
 import com.aking.aichat.network.RetrofitClient
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.txznet.common.model.BaseRepository
 
@@ -14,6 +14,6 @@ class ChatRepository : BaseRepository() {
 
     private val charGPTClient = RetrofitClient.getInstance().create(ChatApis::class.java)
 
-    suspend fun postResponse(jsonData: JsonObject) = charGPTClient.postRequest()
+    suspend fun postResponse(jsonData: JsonObject): GptResponse = charGPTClient.postRequest(jsonData)
 
 }

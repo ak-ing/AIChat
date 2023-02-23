@@ -6,7 +6,6 @@ import timber.log.Timber
 
 /**
  * Created by Rick at 2023/02/23 2:03
- * @Description //TODO $
  */
 class App : Application() {
 
