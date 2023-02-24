@@ -3,5 +3,17 @@
 
     <!--app bar title-->
     <string name="title_home">Home</string>
+    <string name="title_search">收索</string>
     <string name="title_history">历史记录</string>
+
+    <!--menu title-->
+    <string name="menu_transform">Transform</string>
+    <string name="menu_reflow">Reflow</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_settings">Settings</string>
+
+    <!--Description-->
+    <string name="nav_header_desc">头像</string>
+    <string name="nav_open_drawer">打开侧边栏</string>
+    <string name="nav_close_drawer">关闭侧边栏</string>
 </resources>

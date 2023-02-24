@@ -23,7 +23,7 @@ class MainViewModel : BaseViewModel<ChatRepository>(ChatRepository()) {
     val contentLd: LiveData<List<ContentEntity>> get() = _contentList
 
     init {
-        postResponse("hello! who are you?")
+//        postResponse("hello! who are you?")
     }
 
     /**
