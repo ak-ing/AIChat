@@ -1,10 +1,13 @@
 package com.aking.aichat.model.repository
 
+import com.aking.aichat.model.BaseRepository
+import com.aking.aichat.model.bean.Choice
 import com.aking.aichat.model.bean.GptResponse
 import com.aking.aichat.network.ChatApis
 import com.aking.aichat.network.RetrofitClient
+import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.txznet.common.model.BaseRepository
+import timber.log.Timber
 
 /**
  * Created by Rick at 2023/02/23 0:52
@@ -14,6 +17,22 @@ class ChatRepository : BaseRepository() {
 
     private val charGPTClient = RetrofitClient.getInstance().create(ChatApis::class.java)
 
-    suspend fun postResponse(jsonData: JsonObject): GptResponse = charGPTClient.postRequest(jsonData)
+    suspend fun postRequest(query: String): GptResponse<Choice> {
+        Timber.tag("postResponse").v(query)
+        val request = getRequest(query)
+        return executeHttp { charGPTClient.postRequest(request) }
+    }
 
+    /**
+     * 获取请求体
+     */
+    private fun getRequest(query: String?) = JsonObject().apply {
+        addProperty("model", "text-davinci-003")
+        addProperty("prompt", "$query")
+        addProperty("temperature", 0)
+        addProperty("max_tokens", 500)
+        addProperty("top_p", 1)
+        addProperty("frequency_penalty", 0.0)
+        addProperty("presence_penalty", 0.0)
+    }
 }

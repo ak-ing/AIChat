@@ -7,20 +7,38 @@
         <variable
             name="viewModel"
             type="com.aking.aichat.vm.MainViewModel" />
+
+        <variable
+            name="click"
+            type="com.aking.aichat.ui.page.HomeFragment.ClickProxy" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="?android:colorBackground"
         android:clipChildren="false">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/content_guideline"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chats"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.7" />
+            android:layout_margin="@dimen/grid_2"
+            android:contentDescription="@string/des_new_chats"
+            android:onClickListener="@{click::newChats}"
+            android:text="@string/des_new_chats"
+            android:theme="@style/Theme.Material3.DayNight"
+            android:tooltipText="@string/des_new_chats"
+            app:backgroundTint="@color/reply_blue_600"
+            app:icon="@drawable/ic_edit"
+            app:layout_anchor="@id/rv_chats"
+            app:layout_anchorGravity="bottom|end"
+            app:layout_behavior="com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton$ExtendedFloatingActionButtonBehavior" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

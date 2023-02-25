@@ -8,9 +8,9 @@
 
     <com.aking.aichat.ui.view.FullDrawerLayout
         android:id="@+id/drawer_layout"
-        android:clickable="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clickable="true">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorBackground"
+                android:background="@color/reply_blue_100"
                 android:fitsSystemWindows="true">
 
                 <com.google.android.material.appbar.MaterialToolbar
@@ -38,6 +38,7 @@
                 app:defaultNavHost="true"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 app:navGraph="@navigation/mobile_navigation" />
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView

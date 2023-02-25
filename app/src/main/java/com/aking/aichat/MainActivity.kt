@@ -1,7 +1,10 @@
 package com.aking.aichat
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -34,8 +37,9 @@ class MainActivity : AppCompatActivity() {
         binding.navView.let {
             appBarConfiguration = AppBarConfiguration(
                 setOf(
+                    R.id.navigation_search,
                     R.id.navigation_home,
-                    R.id.navigation_search
+                    R.id.navigation_setting
                 ), binding.drawerLayout
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
@@ -45,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         val actionBarDrawerToggle = object : ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
-            binding.toolbar,
+            /*binding.toolbar, 传入toolbar就不会回调onOptionsItemSelected和onSupportNavigateUp */
             R.string.nav_open_drawer,
             R.string.nav_close_drawer
         ) {
@@ -77,9 +81,26 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val result = super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.app_bar_navigation, menu)
+        return result
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Toast.makeText(this, "onOptionsItemSelected", Toast.LENGTH_SHORT).show()
+        when (item.itemId) {
+            R.id.navigation_search -> {
+                val navController = findNavController(R.id.nav_host_fragment)
+                navController.navigate(R.id.navigation_search)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
+        Toast.makeText(this, "onSupportNavigateUp", Toast.LENGTH_SHORT).show()
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
 }

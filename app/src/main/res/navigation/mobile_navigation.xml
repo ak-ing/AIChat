@@ -9,12 +9,31 @@
         android:id="@+id/navigation_home"
         android:name="com.aking.aichat.ui.page.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_search"
+            app:destination="@id/navigation_search" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_chat"
+            app:destination="@id/navigation_chat" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_search"
         android:name="com.aking.aichat.ui.page.SearchFragment"
-        android:label="@string/menu_reflow"
+        android:label="@string/title_search"
         tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.aking.aichat.ui.page.SettingFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_setting" />
+
+    <fragment
+        android:id="@+id/navigation_chat"
+        android:name="com.aking.aichat.ui.page.ChatFragment"
+        android:label="@string/title_chats"
+        tools:layout="@layout/fragment_chat" />
 
 </navigation>

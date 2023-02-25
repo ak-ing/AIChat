@@ -4,20 +4,18 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_home"
-            android:icon="@drawable/ic_camera_black_24dp"
-            android:title="@string/menu_transform" />
-        <item
             android:id="@+id/navigation_search"
-            android:icon="@drawable/ic_gallery_black_24dp"
-            android:title="@string/menu_reflow" />
-<!--        <item-->
-<!--            android:id="@+id/nav_slideshow"-->
-<!--            android:icon="@drawable/ic_slideshow_black_24dp"-->
-<!--            android:title="@string/menu_slideshow" />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_settings"-->
-<!--            android:icon="@drawable/ic_settings_black_24dp"-->
-<!--            android:title="@string/menu_settings" />-->
+            android:visible="false" />
+        <item
+            android:id="@+id/navigation_home"
+            android:contentDescription="@string/title_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/title_home" />
+
+        <item
+            android:id="@+id/navigation_setting"
+            android:contentDescription="@string/title_setting"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/title_setting" />
     </group>
 </menu>

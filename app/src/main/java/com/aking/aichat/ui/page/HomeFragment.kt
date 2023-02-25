@@ -1,5 +1,7 @@
 package com.aking.aichat.ui.page
 
+import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.aking.aichat.BR
 import com.aking.aichat.R
 import com.aking.aichat.databinding.FragmentHomeBinding
@@ -14,9 +16,15 @@ class HomeFragment : BaseVMFragment<FragmentHomeBinding, MainViewModel>(R.layout
     override fun getVMExtras(): Any? = null
 
     override fun FragmentHomeBinding.initView() {
-        setVariable(BR.viewModel, vm)
+        bindVariables(BR.viewModel to vm, BR.click to ClickProxy())
     }
 
     override fun FragmentHomeBinding.initObservable() {
+    }
+
+    inner class ClickProxy {
+        fun newChats(v: View) {
+            findNavController().navigate(R.id.action_navigation_home_to_navigation_chat)
+        }
     }
 }
