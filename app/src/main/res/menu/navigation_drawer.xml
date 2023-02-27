@@ -4,9 +4,6 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_search"
-            android:visible="false" />
-        <item
             android:id="@+id/navigation_home"
             android:contentDescription="@string/title_home"
             android:icon="@drawable/ic_home"

@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -37,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         binding.navView.let {
             appBarConfiguration = AppBarConfiguration(
                 setOf(
-                    R.id.navigation_search,
                     R.id.navigation_home,
                     R.id.navigation_setting
                 ), binding.drawerLayout
@@ -76,6 +77,11 @@ class MainActivity : AppCompatActivity() {
                 mContent.scaleX = endScale
                 mContent.scaleY = endScale
             }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                super.onDrawerStateChanged(newState)
+                syncState()
+            }
         }
         actionBarDrawerToggle.syncState()
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
@@ -84,6 +90,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val result = super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.app_bar_navigation, menu)
+        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
+            if (appBarConfiguration.topLevelDestinations.contains(destination.id)) {
+                if (binding.drawerLayout.getDrawerLockMode(binding.navView) != LOCK_MODE_UNLOCKED) {
+                    binding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
+                }
+                binding.toolbar.menu.findItem(R.id.navigation_search).isVisible = true
+            } else {
+                binding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
+                binding.toolbar.menu.findItem(R.id.navigation_search).isVisible = false
+            }
+        }
         return result
     }
 
@@ -92,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.navigation_search -> {
                 val navController = findNavController(R.id.nav_host_fragment)
-                navController.navigate(R.id.navigation_search)
+                navController.navigate(R.id.action_navigation_home_to_navigation_search)
             }
         }
         return super.onOptionsItemSelected(item)

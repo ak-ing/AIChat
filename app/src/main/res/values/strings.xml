@@ -12,4 +12,9 @@
     <string name="nav_close_drawer">关闭侧边栏</string>
     <string name="nav_header_desc">头像</string>
     <string name="des_new_chats">开始聊天</string>
+    <string name="des_send_message">发送消息</string>
+    <string name="des_voice_input">语音输入</string>
+
+    <!--text-->
+    <string name="text_message_hint">消息</string>
 </resources>

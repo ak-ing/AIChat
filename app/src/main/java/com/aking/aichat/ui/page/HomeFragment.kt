@@ -1,6 +1,7 @@
 package com.aking.aichat.ui.page
 
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.aking.aichat.BR
 import com.aking.aichat.R

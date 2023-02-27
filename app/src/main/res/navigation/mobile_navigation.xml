@@ -9,10 +9,7 @@
         android:id="@+id/navigation_home"
         android:name="com.aking.aichat.ui.page.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_search"
-            app:destination="@id/navigation_search" />
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_navigation_home_to_navigation_chat"
             app:destination="@id/navigation_chat" />
@@ -35,5 +32,9 @@
         android:name="com.aking.aichat.ui.page.ChatFragment"
         android:label="@string/title_chats"
         tools:layout="@layout/fragment_chat" />
+
+    <action
+        android:id="@+id/action_navigation_home_to_navigation_search"
+        app:destination="@id/navigation_search" />
 
 </navigation>

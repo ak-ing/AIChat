@@ -22,6 +22,7 @@ import com.bumptech.glide.RequestBuilder
  * Binding适配器
  */
 
+
 @BindingAdapter(value = ["topSystemWindowInsets"], requireAll = false)
 fun View.bindSystemWindowInsets(topInsets: Boolean) {
     setOnApplyWindowInsetsListener { v, insets ->

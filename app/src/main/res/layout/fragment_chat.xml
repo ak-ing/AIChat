@@ -1,19 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.aking.aichat.vm.MainViewModel" />
+            type="com.aking.aichat.vm.ChatViewModel" />
+
+        <variable
+            name="click"
+            type="com.aking.aichat.ui.page.ChatFragment.ClickProxy" />
+
+        <variable
+            name="adapter"
+            type="com.aking.aichat.ui.adapter.ChatAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:clipChildren="false">
+        android:fitsSystemWindows="true">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chats"
+            adapter="@{adapter}"
+            submitList="@{viewModel.chatListLD}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_chat_gpt" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/reply_blue_100"
+            android:fitsSystemWindows="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/grid_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/btn_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/actionBarItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/des_voice_input"
+                android:focusable="true"
+                android:padding="@dimen/min_icon_target_padding"
+                android:tooltipText="@string/des_voice_input"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_mic"
+                app:tint="@color/reply_blue_600" />
+
+            <EditText
+                android:id="@+id/edit_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/grid_2"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="@string/text_message_hint"
+                android:minHeight="@dimen/min_touch_target_size"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <ImageButton
+                android:id="@+id/btn_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/actionBarItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/des_send_message"
+                android:focusable="true"
+                android:onClickListener="@{click::clickSend}"
+                android:padding="@dimen/min_icon_target_padding"
+                android:tooltipText="@string/des_send_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_twotone_send"
+                app:tint="@color/reply_blue_600" />
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/content_guideline"
