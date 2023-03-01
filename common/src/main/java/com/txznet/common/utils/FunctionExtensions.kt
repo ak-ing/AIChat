@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import java.lang.reflect.ParameterizedType
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -171,3 +173,15 @@ fun View.centerColor(): Int {
  */
 fun Context.getCompatColor(@ColorRes color: Int) = ContextCompat.getColor(this, color)
 
+/**
+ * 时间戳转日期
+ */
+fun Long.parseDate(pattern: String? = null): String {
+    val dateFormat = SimpleDateFormat(pattern ?: "yyyy-MM-dd hh:mm", Locale.getDefault())
+    return dateFormat.format(Date(this * 1000L))
+}
+
+/**
+ * 当前时间戳(秒针)
+ */
+fun currentSeconds() = System.currentTimeMillis() / 1000

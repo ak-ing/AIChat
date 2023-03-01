@@ -1,7 +1,6 @@
 package com.aking.aichat.model.bean
 
 import androidx.core.util.Consumer
-import androidx.recyclerview.widget.DiffUtil
 import java.io.Serializable
 
 /**
@@ -13,12 +12,11 @@ open class GptResponse<T>(
     val usage: Usage? = null,
     open val error: Error? = null,
     val created: Int? = null,
-    val id: String? = null,
+    val id: String = "",
     val model: String? = null,
-    val `object`: String? = null
+    val `object`: String? = null,
+    val type: String? = null
 ) : Serializable {
-    val isSuccess = false
-
     data class Usage(
         val completion_tokens: Int,
         val prompt_tokens: Int,
@@ -35,10 +33,10 @@ open class GptResponse<T>(
         return this
     }
 
-    fun isNotEmpty() = isSuccess
+    fun isNotEmpty() = choices.isNotEmpty()
 
     override fun toString(): String {
-        return "GptResponse(choices=$choices, usage=$usage, error=$error, created=$created, id=$id, model=$model, `object`=$`object`, isSuccess=$isSuccess)"
+        return "GptResponse(choices=$choices, usage=$usage, error=$error, created=$created, id=$id, model=$model, `object`=$`object`, type=$type)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,17 +52,8 @@ open class GptResponse<T>(
         if (id != other.id) return false
         if (model != other.model) return false
         if (`object` != other.`object`) return false
-        if (isSuccess != other.isSuccess) return false
 
         return true
-    }
-
-    object GptDiffCallback : DiffUtil.ItemCallback<GptResponse<Choice>>() {
-        override fun areItemsTheSame(oldItem: GptResponse<Choice>, newItem: GptResponse<Choice>): Boolean =
-            oldItem.id == newItem.id
-
-        override fun areContentsTheSame(oldItem: GptResponse<Choice>, newItem: GptResponse<Choice>): Boolean =
-            oldItem == newItem
     }
 }
 

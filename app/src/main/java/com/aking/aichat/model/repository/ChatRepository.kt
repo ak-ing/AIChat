@@ -30,7 +30,7 @@ class ChatRepository : BaseRepository() {
         addProperty("model", "text-davinci-003")
         addProperty("prompt", "$query")
         addProperty("temperature", 0)
-        addProperty("max_tokens", 500)
+        addProperty("max_tokens", 800)
         addProperty("top_p", 1)
         addProperty("frequency_penalty", 0.0)
         addProperty("presence_penalty", 0.0)

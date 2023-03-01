@@ -2,13 +2,10 @@ package com.aking.aichat.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.aking.aichat.database.entity.ContentEntity
+import com.aking.aichat.database.entity.ChatEntity
 import com.aking.aichat.model.repository.ChatRepository
 import com.google.gson.Gson
 import com.txznet.common.vm.BaseViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * Created by Rick at 2023/02/23 1:00
@@ -17,8 +14,8 @@ import timber.log.Timber
 class MainViewModel : BaseViewModel<ChatRepository>(ChatRepository()) {
     private val gson = Gson()
 
-    private val _contentList = MutableLiveData<List<ContentEntity>>()
-    val contentLd: LiveData<List<ContentEntity>> get() = _contentList
+    private val _contentList = MutableLiveData<List<ChatEntity>>()
+    val contentLd: LiveData<List<ChatEntity>> get() = _contentList
 
     init {
     }

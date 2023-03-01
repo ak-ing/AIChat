@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_navigation_home_to_navigation_chat"
-            app:destination="@id/navigation_chat" />
+            app:destination="@id/navigation_chat"
+            app:enterAnim="@anim/fragment_enter"
+            app:exitAnim="@anim/fragment_exit"
+            app:popEnterAnim="@anim/fragment_enter_pop"
+            app:popExitAnim="@anim/fragment_exit_pop" />
     </fragment>
 
     <fragment
@@ -31,10 +35,18 @@
         android:id="@+id/navigation_chat"
         android:name="com.aking.aichat.ui.page.ChatFragment"
         android:label="@string/title_chats"
-        tools:layout="@layout/fragment_chat" />
+        tools:layout="@layout/fragment_chat">
+        <argument
+            android:name="conversation"
+            app:argType="com.aking.aichat.database.entity.ConversationEntity" />
+    </fragment>
 
     <action
         android:id="@+id/action_navigation_home_to_navigation_search"
-        app:destination="@id/navigation_search" />
+        app:destination="@id/navigation_search"
+        app:enterAnim="@anim/fragment_enter"
+        app:exitAnim="@anim/fragment_exit"
+        app:popEnterAnim="@anim/fragment_enter_pop"
+        app:popExitAnim="@anim/fragment_exit_pop" />
 
 </navigation>

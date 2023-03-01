@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val result = super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.app_bar_navigation, menu)
-        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
+        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
             if (appBarConfiguration.topLevelDestinations.contains(destination.id)) {
                 if (binding.drawerLayout.getDrawerLockMode(binding.navView) != LOCK_MODE_UNLOCKED) {
                     binding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
@@ -105,7 +104,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Toast.makeText(this, "onOptionsItemSelected", Toast.LENGTH_SHORT).show()
         when (item.itemId) {
             R.id.navigation_search -> {
                 val navController = findNavController(R.id.nav_host_fragment)
@@ -116,7 +114,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        Toast.makeText(this, "onSupportNavigateUp", Toast.LENGTH_SHORT).show()
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }

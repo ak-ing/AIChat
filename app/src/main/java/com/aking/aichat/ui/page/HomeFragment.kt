@@ -1,13 +1,15 @@
 package com.aking.aichat.ui.page
 
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.aking.aichat.BR
 import com.aking.aichat.R
+import com.aking.aichat.database.entity.ConversationEntity
 import com.aking.aichat.databinding.FragmentHomeBinding
+import com.aking.aichat.ui.adapter.ConversationAdapter
 import com.aking.aichat.vm.MainViewModel
 import com.txznet.common.ui.BaseVMFragment
+import com.txznet.common.utils.currentSeconds
 
 /**
  * Created by Rick at 2023/02/23 1:05
@@ -25,7 +27,17 @@ class HomeFragment : BaseVMFragment<FragmentHomeBinding, MainViewModel>(R.layout
 
     inner class ClickProxy {
         fun newChats(v: View) {
-            findNavController().navigate(R.id.action_navigation_home_to_navigation_chat)
+//            this@HomeFragment.apply {
+//                exitTransition = MaterialElevationScale(false).apply {
+//                    duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+//                }
+//                reenterTransition = MaterialElevationScale(true).apply {
+//                    duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+//                }
+//            }
+            val entity = ConversationEntity(0, "ak", ConversationAdapter.avatars.random(), currentSeconds())
+            val action = HomeFragmentDirections.actionNavigationHomeToNavigationChat(entity)
+            findNavController().navigate(action)
         }
     }
 }

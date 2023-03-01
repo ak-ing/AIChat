@@ -8,6 +8,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -23,12 +24,15 @@ import com.bumptech.glide.RequestBuilder
  */
 
 
-@BindingAdapter(value = ["topSystemWindowInsets"], requireAll = false)
-fun View.bindSystemWindowInsets(topInsets: Boolean) {
+@BindingAdapter(value = ["topSystemWindowInsets", "bottomSystemWindowInsets"], requireAll = false)
+fun View.bindSystemWindowInsets(topInsets: Boolean, bottomInsets: Boolean) {
     setOnApplyWindowInsetsListener { v, insets ->
-        val top = WindowInsetsCompat.toWindowInsetsCompat(insets, v)
-            .getInsets(WindowInsetsCompat.Type.statusBars()).top
-        if (topInsets) v.updatePadding(top = top)
+        WindowInsetsCompat.toWindowInsetsCompat(insets, v).also {
+            val top = if (topInsets) it.getInsets(WindowInsetsCompat.Type.statusBars()).top else paddingTop
+            val bottom =
+                if (bottomInsets) it.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom else paddingBottom
+            if (topInsets || bottomInsets) v.updatePadding(top = top, bottom = bottom)
+        }
         insets
     }
 }
@@ -171,3 +175,10 @@ private fun createGlideRequest(
 }
 
 
+/**
+ * 时间转日期显示
+ */
+@BindingAdapter("textTimestamp", "timeFormat", requireAll = false)
+fun TextView.bindTimestamp(timestamp: Long, timeFormat: String? = null) {
+    text = timestamp.parseDate(timeFormat)
+}

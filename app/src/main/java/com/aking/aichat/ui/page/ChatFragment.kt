@@ -1,6 +1,7 @@
 package com.aking.aichat.ui.page
 
 import android.view.View
+import androidx.navigation.fragment.navArgs
 import com.aking.aichat.BR
 import com.aking.aichat.R
 import com.aking.aichat.databinding.FragmentChatBinding
@@ -13,13 +14,16 @@ import com.txznet.common.ui.BaseVMFragment
  * Description:
  */
 class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout.fragment_chat) {
-    override fun getVMExtras(): Any? = null
+    private val args: ChatFragmentArgs by navArgs()
+
+    override fun getVMExtras(): Any = args.conversation
 
     override fun FragmentChatBinding.initView() {
         bindVariables(BR.viewModel to vm, BR.click to ClickProxy(), BR.adapter to ChatAdapter())
     }
 
     override fun FragmentChatBinding.initObservable() {
+        vm.postRequest("OpenAi的max_tokens字段有什么用？")
     }
 
     inner class ClickProxy {

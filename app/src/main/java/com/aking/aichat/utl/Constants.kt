@@ -7,4 +7,7 @@ package com.aking.aichat.utl
 object Constants {
     const val API_KEY_GPT = "sk-"
     const val API_KEY_GPT_APPEND = "Jag6xAQyRvAJRI1aQU3CT3BlbkFJ67rQzbrp1f6oHrzvHDEH"
+
+
+    const val DATABASE_CHAT = "room_chat_db"
 }
