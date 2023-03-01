@@ -18,85 +18,91 @@
             type="com.aking.aichat.ui.adapter.ChatAdapter" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <com.aking.aichat.ui.view.InsetsAnimationLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chats"
-            adapter="@{adapter}"
-            itemDecoration="@{4}"
-            submitList="@{viewModel.chatListLD}"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:overScrollMode="never"
-            android:paddingBottom="@dimen/grid_0_5"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior=".ui.helper.BottomAppBarScrollViewBehavior"
-            app:stackFromEnd="true"
-            tools:listitem="@layout/item_chat_gpt" />
+            android:layout_height="match_parent">
 
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottom_appbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/top_app_bar_height"
-            android:layout_gravity="bottom"
-            app:backgroundTint="@color/reply_blue_100"
-            app:contentInsetStart="0dp"
-            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior">
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_chats"
+                adapter="@{adapter}"
+                itemDecoration="@{4}"
+                submitList="@{viewModel.chatListLD}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/grid_1">
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                android:paddingBottom="@dimen/grid_0_5"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior=".ui.helper.BottomAppBarScrollViewBehavior"
+                app:stackFromEnd="true"
+                tools:listitem="@layout/item_chat_gpt" />
 
-                <ImageView
-                    android:id="@+id/btn_voice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/actionBarItemBackground"
-                    android:clickable="true"
-                    android:contentDescription="@string/des_voice_input"
-                    android:focusable="true"
-                    android:padding="@dimen/min_icon_target_padding"
-                    android:tooltipText="@string/des_voice_input"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_mic"
-                    app:tint="@color/reply_blue_600" />
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:id="@+id/bottom_appbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_app_bar_height"
+                android:layout_gravity="bottom"
+                app:backgroundTint="@color/reply_blue_100"
+                app:contentInsetStart="0dp"
+                app:layout_behavior="com.aking.aichat.ui.helper.HideBottomViewBehavior">
 
-                <EditText
-                    android:id="@+id/edit_message"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/grid_2"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/text_message_hint"
-                    android:minHeight="@dimen/min_touch_target_size"
-                    android:textAppearance="?attr/textAppearanceBody1" />
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/grid_1">
 
-                <ImageButton
-                    android:id="@+id/btn_send"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/actionBarItemBackground"
-                    android:clickable="true"
-                    android:contentDescription="@string/des_send_message"
-                    android:focusable="true"
-                    android:onClickListener="@{click::clickSend}"
-                    android:padding="@dimen/min_icon_target_padding"
-                    android:tooltipText="@string/des_send_message"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_twotone_send"
-                    app:tint="@color/reply_blue_600" />
-            </LinearLayout>
-        </com.google.android.material.bottomappbar.BottomAppBar>
+                    <ImageButton
+                        android:id="@+id/btn_voice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/actionBarItemBackground"
+                        android:clickable="true"
+                        android:contentDescription="@string/des_voice_input"
+                        android:focusable="true"
+                        android:padding="@dimen/min_icon_target_padding"
+                        android:tooltipText="@string/des_voice_input"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_mic"
+                        app:tint="@color/reply_blue_600" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                    <EditText
+                        android:id="@+id/edit_message"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/grid_2"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/text_message_hint"
+                        android:minHeight="@dimen/min_touch_target_size"
+                        android:textAppearance="?attr/textAppearanceBody1" />
+
+                    <ImageButton
+                        android:id="@+id/btn_send"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/actionBarItemBackground"
+                        android:clickable="true"
+                        android:contentDescription="@string/des_send_message"
+                        android:focusable="true"
+                        android:onClickListener="@{click::clickSend}"
+                        android:padding="@dimen/min_icon_target_padding"
+                        android:tooltipText="@string/des_send_message"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_twotone_send"
+                        app:tint="@color/reply_blue_600" />
+                </LinearLayout>
+            </com.google.android.material.bottomappbar.BottomAppBar>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </com.aking.aichat.ui.view.InsetsAnimationLinearLayout>
 </layout>

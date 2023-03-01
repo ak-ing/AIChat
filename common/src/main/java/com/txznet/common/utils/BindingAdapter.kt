@@ -37,6 +37,18 @@ fun View.bindSystemWindowInsets(topInsets: Boolean, bottomInsets: Boolean) {
     }
 }
 
+@BindingAdapter(value = ["adjustIme"], requireAll = false)
+fun View.bindAdjustIme(adjustIme: Boolean) {
+    if (!adjustIme) return
+    setOnApplyWindowInsetsListener { v, insets ->
+        WindowInsetsCompat.toWindowInsetsCompat(insets, v).also {
+            val bottom = it.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            v.updatePadding(bottom = bottom)
+        }
+        insets
+    }
+}
+
 @BindingAdapter(value = ["selected"], requireAll = false)
 fun View.bindSelect(select: Boolean) {
     this.isSelected = select
@@ -76,10 +88,7 @@ fun RecyclerView.submitList(list: List<Any>?) {
 fun RecyclerView.bindBottomDecoration(dp: Int) {
     this.addItemDecoration(object : ItemDecoration() {
         override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
+            outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
         ) {
             outRect.bottom = dp.dp.toInt()
         }
@@ -90,10 +99,7 @@ fun RecyclerView.bindBottomDecoration(dp: Int) {
 fun RecyclerView.bindItemDecoration(dp: Int) {
     this.addItemDecoration(object : ItemDecoration() {
         override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
+            outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
         ) {
             val size = dp.dp.toInt()
             outRect.bottom = size
@@ -120,11 +126,7 @@ fun View.bindShowIf(show: Boolean) {
  * 点击防抖
  */
 @BindingAdapter(
-    "debouncingClick",
-    "debouncingDuration",
-    "debouncingWithEnable",
-    "debouncingCountDown",
-    requireAll = false
+    "debouncingClick", "debouncingDuration", "debouncingWithEnable", "debouncingCountDown", requireAll = false
 )
 fun View.bindClickDebouncing(
     clickListener: View.OnClickListener,
@@ -141,32 +143,21 @@ fun View.bindClickDebouncing(
 }
 
 @BindingAdapter(
-    "glideSrc",
-    "glideCenterCrop",
-    "glideCircularCrop",
-    requireAll = false
+    "glideSrc", "glideCenterCrop", "glideCircularCrop", requireAll = false
 )
 fun ImageView.bindGlideSrc(
-    @DrawableRes drawableRes: Int?,
-    centerCrop: Boolean = false,
-    circularCrop: Boolean = false
+    @DrawableRes drawableRes: Int?, centerCrop: Boolean = false, circularCrop: Boolean = false
 ) {
     if (drawableRes == null) return
     /* Glide加载 */
     createGlideRequest(
-        context,
-        drawableRes,
-        centerCrop,
-        circularCrop
+        context, drawableRes, centerCrop, circularCrop
     ).into(this)
 }
 
 @SuppressLint("CheckResult")
 private fun createGlideRequest(
-    context: Context,
-    @DrawableRes src: Int,
-    centerCrop: Boolean,
-    circularCrop: Boolean
+    context: Context, @DrawableRes src: Int, centerCrop: Boolean, circularCrop: Boolean
 ): RequestBuilder<Drawable> {
     val req = Glide.with(context).load(src)
     if (centerCrop) req.centerCrop()

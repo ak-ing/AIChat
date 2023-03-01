@@ -49,8 +49,7 @@ fun calculateCIE76Distance(color1: Int, color2: Int): Double {
     val g2 = Color.green(color2)
     val b2 = Color.blue(color2)
     return sqrt(
-        (r1 - r2).toDouble().pow(2.0) + (g1 - g2).toDouble().pow(2.0) + (b1 - b2).toDouble()
-            .pow(2.0)
+        (r1 - r2).toDouble().pow(2.0) + (g1 - g2).toDouble().pow(2.0) + (b1 - b2).toDouble().pow(2.0)
     )
 }
 
@@ -134,8 +133,7 @@ fun Window.hideSystemUI() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         WindowCompat.getInsetsController(this, decorView).also {
             it.hide(WindowInsetsCompat.Type.systemBars())
-            it.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     } else {
         addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -185,3 +183,12 @@ fun Long.parseDate(pattern: String? = null): String {
  * 当前时间戳(秒针)
  */
 fun currentSeconds() = System.currentTimeMillis() / 1000
+
+/**
+ * 计算窗口中的底部
+ */
+fun View.calculateBottomInWindow(): Int {
+    val location = IntArray(2)
+    getLocationInWindow(location)
+    return location[1] + height
+}
