@@ -21,6 +21,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
+import com.aking.aichat.R
 
 
 private val tmpIntArr = IntArray(2)
@@ -28,9 +29,11 @@ private val tmpIntArr = IntArray(2)
 /**
  * Function which updates the given [rect] with this view's position and bounds in its window.
  */
-fun View.copyBoundsInWindow(rect: Rect) {
+fun View.copyBoundsInWindow(rect: Rect, clipPadding: Boolean = false) {
     if (isLaidOut && isAttachedToWindow) {
-        rect.set(0, 0, width, height)
+        val right = if (clipPadding) width - paddingStart - paddingEnd else width
+        val bottom = if (clipPadding) height - paddingTop - paddingBottom else height
+        rect.set(0, 0, right, bottom)
         getLocationInWindow(tmpIntArr)
         rect.offset(tmpIntArr[0], tmpIntArr[1])
     } else {
@@ -69,3 +72,42 @@ private fun hiddenSuppressLayout(group: ViewGroup, suppress: Boolean) {
         }
     }
 }
+
+
+/**
+ * 把当前的ViewGroup.getClipToPadding存在Tag里面，用于恢复
+ */
+fun ViewGroup.storeClipToPadding() {
+    setTag(R.id.viewgroup_clip_padding, clipToPadding)
+}
+
+/**
+ * 从storeClipChildren中恢复ViewGroup.getClipToPadding的值
+ */
+fun ViewGroup.restoreClipToPadding() {
+    val stored = getTag(R.id.viewgroup_clip_padding)
+    if (stored is Boolean) {
+        //确认类型正确
+        clipToPadding = stored
+    }
+    setTag(R.id.viewgroup_clip_padding, null)
+}
+
+/**
+ * 存储当前的ViewGroup的Tag中的值
+ */
+fun ViewGroup.storeClipChildren() {
+    setTag(R.id.viewgroup_clip_children, clipChildren)
+}
+
+/**
+ * 从storeClipChildren中恢复ViewGroup.getClipChildren的值
+ */
+fun ViewGroup.restoreClipChildren() {
+    val stored = getTag(R.id.viewgroup_clip_children)
+    if (stored is Boolean) {
+        clipChildren = stored
+    }
+    setTag(R.id.viewgroup_clip_children, null)
+}
+

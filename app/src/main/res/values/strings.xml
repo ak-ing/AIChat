@@ -2,7 +2,7 @@
     <string name="app_name">AIChat</string>
 
     <!--menu title-->
-    <string name="title_home">Home</string>
+    <string name="title_home">首页</string>
     <string name="title_search">搜索</string>
     <string name="title_setting">设置</string>
     <string name="title_chats">聊天</string>

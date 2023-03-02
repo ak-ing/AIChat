@@ -20,12 +20,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/reply_blue_100"
-                android:fitsSystemWindows="true">
+                android:fitsSystemWindows="true"
+                app:elevation="@dimen/grid_0_5">
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/top_app_bar_height"
+                    android:layout_height="?attr/actionBarSize"
                     app:title="@string/title_home"
                     app:titleTextAppearance="?attr/textAppearanceHeadline6" />
             </com.google.android.material.appbar.AppBarLayout>

@@ -3,8 +3,8 @@ package com.aking.aichat.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.aking.aichat.databinding.ItemChatGptBinding
-import com.aking.aichat.databinding.ItemChatUserBinding
+import com.aking.aichat.databinding.MessageBubbleOtherBinding
+import com.aking.aichat.databinding.MessageBubbleSelfBinding
 import com.aking.aichat.model.bean.GptDiffCallback
 import com.aking.aichat.model.bean.GptText
 import com.aking.aichat.utl.CommonViewHolder
@@ -16,9 +16,9 @@ import com.aking.aichat.utl.CommonViewHolder
 class ChatAdapter : ListAdapter<GptText, CommonViewHolder>(GptDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder {
         val bind = if (viewType == GptText.GPT) {
-            ItemChatGptBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            MessageBubbleOtherBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         } else {
-            ItemChatUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            MessageBubbleSelfBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         }
         return CommonViewHolder(bind)
     }

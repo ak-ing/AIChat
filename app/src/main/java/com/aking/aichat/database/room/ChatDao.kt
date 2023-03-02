@@ -32,6 +32,7 @@ interface ChatDao {
 
 
     //将简单参数传递给查询
+    @Transaction
     @Query("SELECT * FROM chats WHERE id == :id")
     fun loadById(id: String): ChatEntity?
 }

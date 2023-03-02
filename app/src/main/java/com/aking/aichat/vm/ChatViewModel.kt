@@ -30,17 +30,17 @@ class ChatViewModel(private val conversation: ConversationEntity) :
      */
     fun postRequest(query: String) = viewModelScope.launch {
         handlerResult(GptText.createUSER(query))
-        repository.postRequest(query).onSuccess {
-            Timber.tag("postRequest").v("$it")
-            Timber.tag("postRequest").v("${it.type}")
-            handlerResult(GptText.createGPT(it))
-            viewModelScope.launch(Dispatchers.IO) {
-                val all = daoRepository.getAll()
-                Timber.tag("all").w(all.toString())
-            }
-        }.onError {
-
-        }
+//        repository.postRequest(query).onSuccess {
+//            Timber.tag("postRequest").v("$it")
+//            Timber.tag("postRequest").v("${it.type}")
+//            handlerResult(GptText.createGPT(it))
+//            viewModelScope.launch(Dispatchers.IO) {
+//                val all = daoRepository.getAll()
+//                Timber.tag("all").w(all.toString())
+//            }
+//        }.onError {
+//
+//        }
     }
 
     private fun handlerResult(gptText: GptText) {

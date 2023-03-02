@@ -16,6 +16,7 @@
 
 package com.aking.aichat.ui.helper
 
+import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.VelocityTracker
@@ -53,6 +54,7 @@ import kotlin.math.roundToInt
  * @param scrollImeOnScreenWhenNotVisible Whether the IME should be scrolled on screen (from not
  * being visible), by an downwards scroll. Defaults to `true`.
  */
+@SuppressLint("ClickableViewAccessibility")
 class InsetsAnimationTouchListener(
     private val scrollImeOffScreenWhenVisible: Boolean = true,
     private val scrollImeOnScreenWhenNotVisible: Boolean = true
