@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/reply_blue_100"
                 android:fitsSystemWindows="true"
-                app:elevation="@dimen/grid_0_5">
+                app:elevation="@dimen/grid_0_25">
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"

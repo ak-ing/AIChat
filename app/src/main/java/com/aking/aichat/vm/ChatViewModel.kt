@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.aking.aichat.database.entity.ChatEntity
 import com.aking.aichat.database.entity.ConversationEntity
 import com.aking.aichat.model.bean.GptText
+import com.aking.aichat.model.bean.GptText.Companion.GPT
+import com.aking.aichat.model.bean.GptText.Companion.USER
 import com.aking.aichat.model.repository.ChatDaoRepository
 import com.aking.aichat.model.repository.ChatRepository
 import com.txznet.common.vm.BaseViewModel
@@ -17,8 +19,7 @@ import timber.log.Timber
  * Created by Rick at 2023/02/23 1:00
  * @Description //TODO $
  */
-class ChatViewModel(private val conversation: ConversationEntity) :
-    BaseViewModel<ChatRepository>(ChatRepository()) {
+class ChatViewModel(private val conversation: ConversationEntity) : BaseViewModel<ChatRepository>(ChatRepository()) {
 
     private val daoRepository by lazy { ChatDaoRepository() }
 
@@ -29,18 +30,22 @@ class ChatViewModel(private val conversation: ConversationEntity) :
      * 发送问题
      */
     fun postRequest(query: String) = viewModelScope.launch {
+        val gpt = chatListLD.value?.findLast { it.viewType == GPT }
+        val user = chatListLD.value?.findLast { it.viewType == USER }
+        val context = "${user?.text}  \n${gpt?.text}"
         handlerResult(GptText.createUSER(query))
-//        repository.postRequest(query).onSuccess {
-//            Timber.tag("postRequest").v("$it")
-//            Timber.tag("postRequest").v("${it.type}")
-//            handlerResult(GptText.createGPT(it))
-//            viewModelScope.launch(Dispatchers.IO) {
-//                val all = daoRepository.getAll()
-//                Timber.tag("all").w(all.toString())
-//            }
-//        }.onError {
-//
-//        }
+
+        repository.postRequest("$context\n$query").onSuccess {
+            Timber.tag("postRequest").v("$it")
+            Timber.tag("postRequest").v("${it.type}")
+            handlerResult(GptText.createGPT(it))
+            viewModelScope.launch(Dispatchers.IO) {
+                val all = daoRepository.getAll()
+                Timber.tag("all").w(all.toString())
+            }
+        }.onError {
+
+        }
     }
 
     private fun handlerResult(gptText: GptText) {

@@ -199,14 +199,14 @@ internal class SimpleImeAnimationController {
      * Return `true` if an inset animation is currently finishing.
      */
     fun isInsetAnimationFinishing(): Boolean {
-        return currentSpringAnimation != null
+        return currentSpringAnimation != null && !currentSpringAnimation!!.isRunning
     }
 
     /**
      * Return `true` if a request to control an inset animation is in progress.
      */
     fun isInsetAnimationRequestPending(): Boolean {
-        return pendingRequestCancellationSignal != null
+        return pendingRequestCancellationSignal != null && !pendingRequestCancellationSignal!!.isCanceled
     }
 
     /**
@@ -339,7 +339,7 @@ internal class SimpleImeAnimationController {
         val controller = insetsAnimationController ?: throw IllegalStateException("Controller should not be null")
 
         currentSpringAnimation = springAnimationOf(
-            setter = { insetTo(it.roundToInt()) },
+            setter = { if (isInsetAnimationInProgress()) insetTo(it.roundToInt()) },
             getter = { controller.currentInsets.bottom.toFloat() },
             finalPosition = when {
                 visible -> controller.shownStateInsets.bottom.toFloat()

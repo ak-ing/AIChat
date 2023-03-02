@@ -18,7 +18,6 @@ package com.aking.aichat.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.WindowInsetsAnimation
 import android.widget.LinearLayout
@@ -50,7 +49,7 @@ import com.aking.aichat.utl.suppressLayoutCompat
  * Note: all of the nested scrolling logic could be extracted to a `CoordinatorLayout.Behavior`
  * if desired.
  */
-class InsetsAnimationLinearLayout @JvmOverloads constructor(
+class InsetsAnimationCoordinatorLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : CoordinatorLayout(context, attrs, defStyleAttr) {
 
@@ -75,6 +74,7 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
     var scrollImeOnScreenWhenNotVisible = true
 
     override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        super.onStartNestedScroll(child, target, axes, type)
         // We only want to track vertical scrolls, which are driven from a direct touch event.
         return (axes and ViewCompat.SCROLL_AXIS_VERTICAL) != 0 && type == ViewCompat.TYPE_TOUCH
     }
@@ -85,6 +85,7 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+        super.onNestedPreScroll(target, dx, dy, consumed, type)
         if (imeAnimController.isInsetAnimationRequestPending()) {
             // We're waiting for a controller to become ready. Consume and no-op the scroll
             consumed[0] = dx
@@ -101,7 +102,6 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
 
         if (deltaY < 0) {
             // If the user is scrolling down...
-
             if (imeAnimController.isInsetAnimationInProgress()) {
                 // If we currently have control, we can update the IME insets using insetBy().
                 //
@@ -135,19 +135,17 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
         type: Int,
         consumed: IntArray
     ) {
-        Log.e("TAG", "$dyUnconsumed: ", )
+        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed)
         if (dyUnconsumed > 0) {
             // If the user is scrolling up, and the scrolling view isn't consuming the scroll...
 
             if (imeAnimController.isInsetAnimationInProgress()) {
-                Log.e("TAG", "onNestedScroll: ", )
                 // If we currently have control, we can update the IME insets
                 consumed[1] = -imeAnimController.insetBy(-dyUnconsumed)
             } else if (scrollImeOnScreenWhenNotVisible && !imeAnimController.isInsetAnimationRequestPending() && ViewCompat.getRootWindowInsets(
                     this
                 )?.isVisible(WindowInsetsCompat.Type.ime()) == false
             ) {
-                Log.e("TAG", "aaaa: ", )
                 // If we don't currently have control, the IME is not shown,
                 // the user is scrolling up, and the view can't scroll up any more
                 // (i.e. over-scrolling), we can start to control the IME insets
@@ -156,7 +154,6 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
                 // We consume the scroll to stop the list scrolling while we wait for a controller
                 consumed[1] = dyUnconsumed
             }
-            Log.e("TAG", "else: ", )
         }
     }
 
@@ -172,23 +169,23 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
         } else {
             // Otherwise we may need to start a control request and immediately fling
             // using the velocityY
-//            val imeVisible = ViewCompat.getRootWindowInsets(this)?.isVisible(WindowInsetsCompat.Type.ime()) == true
-//            when {
-//                velocityY > 0 && scrollImeOnScreenWhenNotVisible && !imeVisible -> {
-//                    // If the fling is in a upwards direction, and the IME is not visible,
-//                    // start an control request with an immediate fling
-//                    imeAnimController.startAndFling(this, velocityY)
-//                    // Indicate that we reacted to the fling
-//                    return true
-//                }
-//                velocityY < 0 && scrollImeOffScreenWhenVisible && imeVisible -> {
-//                    // If the fling is in a downwards direction, and the IME is visible,
-//                    // start an control request with an immediate fling
-//                    imeAnimController.startAndFling(this, velocityY)
-//                    // Indicate that we reacted to the fling
-//                    return true
-//                }
-//            }
+            val imeVisible = ViewCompat.getRootWindowInsets(this)?.isVisible(WindowInsetsCompat.Type.ime()) == true
+            when {
+                velocityY > 50 && scrollImeOnScreenWhenNotVisible && !imeVisible -> {
+                    // If the fling is in a upwards direction, and the IME is not visible,
+                    // start an control request with an immediate fling
+                    imeAnimController.startAndFling(this, velocityY)
+                    // Indicate that we reacted to the fling
+                    return true
+                }
+                velocityY < 50 && scrollImeOffScreenWhenVisible && imeVisible -> {
+                    // If the fling is in a downwards direction, and the IME is visible,
+                    // start an control request with an immediate fling
+                    imeAnimController.startAndFling(this, velocityY)
+                    // Indicate that we reacted to the fling
+                    return true
+                }
+            }
         }
 
         // Otherwise, return false to indicate that we did not
@@ -277,7 +274,6 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
     override fun onNestedScroll(
         target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int
     ) {
-        Log.e("TAG", "onNestedScroll: ")
         onNestedScroll(
             target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, tempIntArray2
         )
@@ -286,6 +282,8 @@ class InsetsAnimationLinearLayout @JvmOverloads constructor(
     override fun onStopNestedScroll(target: View) {
         onStopNestedScroll(target, ViewCompat.TYPE_TOUCH)
     }
+
+    private val tempIntArray2 = IntArray(2)
+
 }
 
-private val tempIntArray2 = IntArray(2)

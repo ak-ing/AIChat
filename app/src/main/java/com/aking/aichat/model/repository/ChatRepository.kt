@@ -26,9 +26,10 @@ class ChatRepository : BaseRepository() {
      * 获取请求体
      */
     private fun getRequest(query: String?) = JsonObject().apply {
+//        addProperty("model", "Davinci-Codex")
         addProperty("model", "text-davinci-003")
         addProperty("prompt", "$query")
-        addProperty("temperature", 0)
+        addProperty("temperature", 0.6)
         addProperty("max_tokens", 1024)
         addProperty("top_p", 1)
         addProperty("frequency_penalty", 0.0)

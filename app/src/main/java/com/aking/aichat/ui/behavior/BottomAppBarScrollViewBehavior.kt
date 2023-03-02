@@ -1,4 +1,4 @@
-package com.aking.aichat.ui.helper
+package com.aking.aichat.ui.behavior
 
 import android.content.Context
 import android.graphics.Rect
@@ -32,6 +32,24 @@ class BottomAppBarScrollViewBehavior(context: Context?, attrs: AttributeSet?) :
             bottomMargin = (dependency.height - dependency.translationY).toInt()
         }
         return true
+    }
+
+    override fun onMeasureChild(
+        parent: CoordinatorLayout,
+        child: View,
+        parentWidthMeasureSpec: Int,
+        widthUsed: Int,
+        parentHeightMeasureSpec: Int,
+        heightUsed: Int
+    ): Boolean {
+        return super.onMeasureChild(
+            parent,
+            child,
+            parentWidthMeasureSpec,
+            widthUsed,
+            parentHeightMeasureSpec,
+            heightUsed
+        )
     }
 
 }
