@@ -1,54 +1,58 @@
 package com.aking.aichat.vm
 
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aking.aichat.database.entity.ChatEntity
-import com.aking.aichat.database.entity.ConversationEntity
+import com.aking.aichat.database.entity.ChatEntity.Companion.toGptText
+import com.aking.aichat.database.entity.OwnerWithChats
 import com.aking.aichat.model.bean.GptText
-import com.aking.aichat.model.bean.GptText.Companion.GPT
-import com.aking.aichat.model.bean.GptText.Companion.USER
-import com.aking.aichat.model.repository.ChatDaoRepository
 import com.aking.aichat.model.repository.ChatRepository
+import com.aking.aichat.model.repository.DaoRepository
+import com.txznet.common.AppGlobal
 import com.txznet.common.vm.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 /**
  * Created by Rick at 2023/02/23 1:00
  * @Description //TODO $
  */
-class ChatViewModel(private val conversation: ConversationEntity) : BaseViewModel<ChatRepository>(ChatRepository()) {
+class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
+    BaseViewModel<ChatRepository>(ChatRepository()) {
 
-    private val daoRepository by lazy { ChatDaoRepository() }
+    private val daoRepository = DaoRepository()
 
-    private val _chatListLD = MutableLiveData<MutableList<GptText>>(mutableListOf())
-    val chatListLD: LiveData<MutableList<GptText>> get() = _chatListLD
+    private val _chatListLD = MutableLiveData<List<GptText>>(mutableListOf())
+    val chatListLD: LiveData<List<GptText>> get() = _chatListLD
+
+    init {
+        addCloseable(daoRepository)
+        _chatListLD.value = ownerWithChats.chat.map { it.toGptText() }
+        notifyConversation()
+    }
 
     /**
      * 发送问题
      */
     fun postRequest(query: String) = viewModelScope.launch {
-        val gpt = chatListLD.value?.findLast { it.viewType == GPT }
-        val user = chatListLD.value?.findLast { it.viewType == USER }
-        val context = "${user?.text}  \n${gpt?.text}"
-        handlerResult(GptText.createUSER(query))
-
-        repository.postRequest("$context\n$query").onSuccess {
+        val builder = repository.buildContext(chatListLD.value ?: emptyList(), 2)
+        handlerMessage(GptText.createUSER(query))
+        repository.postRequest(builder + query).onSuccess {
             Timber.tag("postRequest").v("$it")
-            Timber.tag("postRequest").v("${it.type}")
-            handlerResult(GptText.createGPT(it))
-            viewModelScope.launch(Dispatchers.IO) {
-                val all = daoRepository.getAll()
-                Timber.tag("all").w(all.toString())
-            }
+            handlerMessage(GptText.createGPT(it))
         }.onError {
-
+            Toast.makeText(AppGlobal.context, "${it.error?.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun handlerResult(gptText: GptText) {
+    /**
+     * 处理聊天消息
+     */
+    private fun handlerMessage(gptText: GptText) {
         Timber.tag("postRequest").v("$gptText")
         chatListLD.value?.toMutableList()?.let {
             it.add(gptText)
@@ -56,8 +60,19 @@ class ChatViewModel(private val conversation: ConversationEntity) : BaseViewMode
         }
         //保存数据库
         viewModelScope.launch(Dispatchers.IO) {
-            daoRepository.insertChat(ChatEntity.create(gptText, conversation))
+            daoRepository.insertChat(ChatEntity.create(gptText, ownerWithChats.conversation))
+            ownerWithChats.conversation.timestamp = gptText.created.toLong()   //同步最后时间戳
+            ownerWithChats.conversation.endMessage = gptText.text
+            notifyConversation()
         }
+    }
+
+    /**
+     * 通知会话数据已改变
+     */
+    private fun notifyConversation() = viewModelScope.launch(Dispatchers.IO) {
+        daoRepository.syncConversation(ownerWithChats.conversation)
+        EventBus.getDefault().postSticky(ownerWithChats)
     }
 
 }

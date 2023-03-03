@@ -5,17 +5,23 @@
 
     <data>
 
+        <variable
+            name="item"
+            type="com.aking.aichat.database.entity.OwnerWithChats" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
+        android:layout_marginBottom="1dp"
+        android:background="@color/colorBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:minHeight="?attr/listPreferredItemHeight"
         android:paddingHorizontal="@dimen/grid_2">
 
         <ImageView
-            android:id="@+id/account_profile_image_view"
+            android:id="@+id/iv_AI_avatar"
+            glideSrc="@{item.conversation.avatarRes}"
             android:layout_width="@dimen/navigation_drawer_profile_image_size"
             android:layout_height="@dimen/navigation_drawer_profile_image_size"
             android:padding="@dimen/grid_1"
@@ -23,6 +29,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/grid_2"
+            android:text="@{item.conversation.name}"
+            android:textAppearance="@style/TextAppearance.Reply.Title1"
+            app:layout_constraintBottom_toTopOf="@+id/account_address_text_view"
+            app:layout_constraintStart_toEndOf="@id/iv_AI_avatar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Rick" />
 
         <CheckedTextView
             android:id="@+id/account_address_text_view"
@@ -32,12 +51,24 @@
             android:drawablePadding="@dimen/grid_3"
             android:ellipsize="end"
             android:lines="1"
-            android:textAppearance="?attr/textAppearanceBody1"
+            android:text="@{item.conversation.endMessage}"
+            android:textAppearance="@style/TextAppearance.Reply.Subtitle2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/account_profile_image_view"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/iv_AI_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
             tools:text="hikingfan@gmail.com" />
 
+        <TextView
+            textTimestamp="@{item.conversation.timestamp}"
+            timeFormat="@{&quot;hh:mm&quot;}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Reply.Overline"
+            app:layout_constraintEnd_toEndOf="@+id/account_address_text_view"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="12:30" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

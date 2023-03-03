@@ -6,24 +6,30 @@
 
         <variable
             name="viewModel"
-            type="com.aking.aichat.vm.MainViewModel" />
+            type="com.aking.aichat.vm.HomeViewModel" />
 
         <variable
             name="click"
             type="com.aking.aichat.ui.page.HomeFragment.ClickProxy" />
+
+        <variable
+            name="adapter"
+            type="com.aking.aichat.ui.adapter.ConversationAdapter" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        bottomSystemWindowInsets="@{true}"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:colorBackground"
-        android:clipChildren="false">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_conversation"
+            submitList="@{viewModel.conversationLd}"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:adapter="@{adapter}"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fab"

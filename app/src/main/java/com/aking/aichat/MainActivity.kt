@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onDrawerStateChanged(newState: Int) {
                 super.onDrawerStateChanged(newState)
-                syncState()
+//                syncState()
             }
         }
         actionBarDrawerToggle.syncState()

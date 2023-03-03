@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (c) 2019 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -53,20 +52,30 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextAppearance.Reply.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+    <style name="TextAppearance.Reply.Title1" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="fontFamily">@font/work_sans</item>
         <item name="android:textColor">@color/color_on_surface_emphasis_high</item>
     </style>
 
+    <style name="TextAppearance.Reply.Title2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/work_sans</item>
+        <item name="android:textColor">@color/color_on_surface_emphasis_high</item>
+    </style>
+
+    <style name="TextAppearance.Reply.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/work_sans</item>
+        <item name="android:textColor">@color/color_on_surface_70</item>
+    </style>
+
     <style name="TextAppearance.Reply.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="fontFamily">@font/work_sans_medium</item>
-        <item name="android:textColor">@color/color_on_surface_emphasis_high</item>
+        <item name="android:textColor">@color/color_on_surface_70</item>
     </style>
 
     <style name="TextAppearance.Reply.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="fontFamily">@font/work_sans_medium</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/color_on_surface_emphasis_high</item>
+        <item name="android:textColor">@color/color_on_surface_15</item>
     </style>
 
     <style name="TextAppearance.Reply.Caption" parent="TextAppearance.MaterialComponents.Caption">
@@ -78,7 +87,7 @@
         <item name="fontFamily">@font/work_sans_semibold</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/color_on_surface_emphasis_high</item>
+        <item name="android:textColor">@color/color_on_surface_70</item>
     </style>
 
 </resources>

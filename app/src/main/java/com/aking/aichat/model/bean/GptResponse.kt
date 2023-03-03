@@ -11,11 +11,10 @@ open class GptResponse<T>(
     val choices: List<T> = arrayListOf(),
     val usage: Usage? = null,
     open val error: Error? = null,
-    val created: Int? = null,
+    val created: Int = 0,
     val id: String = "",
     val model: String? = null,
-    val `object`: String? = null,
-    val type: String? = null
+    val `object`: String? = null
 ) : Serializable {
     data class Usage(
         val completion_tokens: Int,
@@ -36,7 +35,7 @@ open class GptResponse<T>(
     fun isNotEmpty() = choices.isNotEmpty()
 
     override fun toString(): String {
-        return "GptResponse(choices=$choices, usage=$usage, error=$error, created=$created, id=$id, model=$model, `object`=$`object`, type=$type)"
+        return "GptResponse(choices=$choices, usage=$usage, error=$error, created=$created, id=$id, model=$model, `object`=$`object`)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,6 +53,17 @@ open class GptResponse<T>(
         if (`object` != other.`object`) return false
 
         return true
+    }
+
+    override fun hashCode(): Int {
+        var result = choices.hashCode()
+        result = 31 * result + (usage?.hashCode() ?: 0)
+        result = 31 * result + (error?.hashCode() ?: 0)
+        result = 31 * result + (created ?: 0)
+        result = 31 * result + id.hashCode()
+        result = 31 * result + (model?.hashCode() ?: 0)
+        result = 31 * result + (`object`?.hashCode() ?: 0)
+        return result
     }
 }
 

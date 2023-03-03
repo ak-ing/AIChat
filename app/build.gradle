@@ -63,4 +63,15 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+
+    def eventbus_version = '3.2.0'
+    implementation "org.greenrobot:eventbus:$eventbus_version"
+    kapt("org.greenrobot:eventbus-annotation-processor:$eventbus_version")
+}
+
+kapt {
+    arguments {
+        useBuildCache = false
+        arg('eventBusIndex', 'com.aking.aichat.MyEventBusIndex')
+    }
 }

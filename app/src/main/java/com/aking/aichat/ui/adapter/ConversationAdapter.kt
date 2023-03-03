@@ -1,31 +1,36 @@
 package com.aking.aichat.ui.adapter
 
-import com.aking.aichat.R
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ListAdapter
+import com.aking.aichat.database.entity.ConversationCallback
+import com.aking.aichat.database.entity.ConversationEntity
+import com.aking.aichat.database.entity.OwnerWithChats
+import com.aking.aichat.databinding.ItemConversationBinding
+import com.aking.aichat.ui.page.HomeFragmentDirections
+import com.aking.aichat.utl.CommonViewHolder
+import com.aking.aichat.utl.Constants
+import com.aking.aichat.utl.generateRandomName
+import com.txznet.common.utils.currentSeconds
 
 /**
  * Created by Rick on 2023-02-27  10:57.
  * Description:
  */
-class ConversationAdapter {
-    companion object {
-        @JvmStatic
-        val avatars = listOf(
-            R.drawable.avatar_1,
-            R.drawable.avatar_2,
-            R.drawable.avatar_3,
-            R.drawable.avatar_4,
-            R.drawable.avatar_5,
-            R.drawable.avatar_6,
-            R.drawable.avatar_7,
-            R.drawable.avatar_8,
-            R.drawable.avatar_9,
-            R.drawable.avatar_10,
-            R.drawable.avatar_11,
-            R.drawable.avatar_12,
-            R.drawable.avatar_13,
-            R.drawable.avatar_14,
-            R.drawable.avatar_15,
-            R.drawable.avatar_16,
+class ConversationAdapter(private val navController: NavController) :
+    ListAdapter<OwnerWithChats, CommonViewHolder>(ConversationCallback) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder = CommonViewHolder(
+        ItemConversationBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
         )
+    )
+
+    override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
+        holder.bind(getItem(position)) {
+            val action = HomeFragmentDirections.actionNavigationHomeToNavigationChat(it)
+            navController.navigate(action)
+        }
     }
 }

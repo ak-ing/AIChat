@@ -10,7 +10,7 @@ import com.txznet.common.utils.currentSeconds
  */
 data class GptText(
     val id: String,
-    val created: Int? = 0,
+    val created: Int = 0,
     val model: String? = null,
     val index: Int = 0,
     val text: String,

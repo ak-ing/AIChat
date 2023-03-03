@@ -1,5 +1,6 @@
 package com.aking.aichat.database.entity
 
+import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
@@ -13,6 +14,8 @@ data class ConversationEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
+    @DrawableRes
     val avatarRes: Int,
-    val timestamp: Long
+    var timestamp: Long,
+    var endMessage: String = ""
 ) : Serializable

@@ -11,7 +11,7 @@ import com.txznet.common.AppGlobal
  * Created by Rick on 2023-02-21  11:47.
  * Description: 无侵入获取 Context
  */
-class AppProvider : ContentProvider() {
+internal class AppProvider : ContentProvider() {
     override fun onCreate(): Boolean {
         AppGlobal.init(context?.applicationContext as Application)
         return true

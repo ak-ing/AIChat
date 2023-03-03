@@ -10,7 +10,7 @@ import com.aking.aichat.database.entity.ChatEntity
 @Dao
 interface ChatDao {
     //新增实体
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertChat(chatEntity: ChatEntity)
 
     //新增多个实体

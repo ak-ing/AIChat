@@ -1,6 +1,7 @@
 package com.aking.aichat
 
 import android.app.Application
+import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 
@@ -16,6 +17,8 @@ class App : Application() {
         } else {
             Timber.plant(Timber.asTree())
         }
+
+        EventBus.builder().addIndex(MyEventBusIndex()).installDefaultEventBus()
     }
 
 }

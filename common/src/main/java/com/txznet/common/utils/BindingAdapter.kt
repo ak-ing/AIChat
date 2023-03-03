@@ -7,11 +7,11 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import androidx.core.view.*
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -24,16 +24,34 @@ import com.bumptech.glide.RequestBuilder
  */
 
 
-@BindingAdapter(value = ["topSystemWindowInsets", "bottomSystemWindowInsets"], requireAll = false)
-fun View.bindSystemWindowInsets(topInsets: Boolean, bottomInsets: Boolean) {
+@BindingAdapter(
+    value = ["topSystemWindowInsets", "bottomSystemWindowInsets", "isInsetsMargin"],
+    requireAll = false
+)
+fun View.bindSystemWindowInsets(topInsets: Boolean, bottomInsets: Boolean, isInsetsMargin: Boolean = false) {
     setOnApplyWindowInsetsListener { v, insets ->
         WindowInsetsCompat.toWindowInsetsCompat(insets, v).also {
-            val top = if (topInsets) it.getInsets(WindowInsetsCompat.Type.statusBars()).top else paddingTop
-            val bottom =
-                if (bottomInsets) it.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom else paddingBottom
-            if (topInsets || bottomInsets) v.updatePadding(top = top, bottom = bottom)
+            if (isInsetsMargin) it.insetsMargin(v, topInsets, bottomInsets)
+            else it.insetsPadding(v, topInsets, bottomInsets)
         }
         insets
+    }
+}
+
+private fun WindowInsetsCompat.insetsPadding(v: View, topInsets: Boolean, bottomInsets: Boolean) {
+    val top = if (topInsets) getInsets(WindowInsetsCompat.Type.statusBars()).top else v.paddingTop
+    val bottom =
+        if (bottomInsets) getInsets(WindowInsetsCompat.Type.navigationBars()).bottom else v.paddingBottom
+    if (topInsets || bottomInsets) v.updatePadding(top = top, bottom = bottom)
+}
+
+private fun WindowInsetsCompat.insetsMargin(v: View, topInsets: Boolean, bottomInsets: Boolean) {
+    val top = if (topInsets) getInsets(WindowInsetsCompat.Type.statusBars()).top else v.marginTop
+    val bottom =
+        if (bottomInsets) getInsets(WindowInsetsCompat.Type.navigationBars()).bottom else v.marginBottom
+    if (topInsets || bottomInsets) v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        topMargin = top
+        bottomMargin = bottom
     }
 }
 

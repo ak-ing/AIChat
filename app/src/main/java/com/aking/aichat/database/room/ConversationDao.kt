@@ -10,7 +10,7 @@ import com.aking.aichat.database.entity.ConversationEntity
 @Dao
 interface ConversationDao {
     //新增实体
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertConversation(conversation: ConversationEntity)
 
     //新增多个实体

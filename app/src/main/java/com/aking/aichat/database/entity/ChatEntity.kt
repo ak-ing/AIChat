@@ -13,7 +13,7 @@ data class ChatEntity(
     @PrimaryKey
     val id: String,
     val conversationId: Int = 0,
-    val created: Int? = 0,
+    val created: Int = 0,
     val model: String? = null,
     val index: Int,
     val text: String,
@@ -21,6 +21,7 @@ data class ChatEntity(
     val viewType: Int
 ) {
     companion object {
+        @JvmStatic
         fun create(gptText: GptText, conversation: ConversationEntity): ChatEntity {
             gptText.also {
                 return ChatEntity(
@@ -34,5 +35,8 @@ data class ChatEntity(
                 )
             }
         }
+
+        @JvmStatic
+        fun ChatEntity.toGptText() = GptText(id, created, model, index, text, viewType)
     }
 }

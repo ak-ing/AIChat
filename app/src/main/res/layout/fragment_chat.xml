@@ -25,11 +25,11 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chats"
-            adapter="@{adapter}"
             itemDecoration="@{4}"
             submitList="@{viewModel.chatListLD}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:adapter="@{adapter}"
             android:clipToPadding="false"
             android:orientation="vertical"
             android:overScrollMode="never"

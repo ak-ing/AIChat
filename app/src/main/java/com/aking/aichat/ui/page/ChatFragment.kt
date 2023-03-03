@@ -22,7 +22,7 @@ import com.txznet.common.ui.BaseVMFragment
 class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout.fragment_chat) {
     private val args: ChatFragmentArgs by navArgs()
 
-    override fun getVMExtras(): Any = args.conversation
+    override fun getVMExtras(): Any = args.ownerWithChat
 
     override fun FragmentChatBinding.initView() {
         bindVariables(BR.viewModel to vm, BR.click to ClickProxy(), BR.adapter to ChatAdapter())
@@ -40,12 +40,6 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
         ViewCompat.setWindowInsetsAnimationCallback(
             root, TranslateViewInsetsAnimationListener(
                 bottomAppbar, WindowInsetsCompat.Type.ime()
-            )
-        )
-
-        ViewCompat.setWindowInsetsAnimationCallback(
-            rvChats, TranslateViewInsetsAnimationListener(
-                rvChats, WindowInsetsCompat.Type.ime()
             )
         )
 

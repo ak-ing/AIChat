@@ -21,7 +21,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
-import com.aking.aichat.R
+import java.util.*
 
 
 private val tmpIntArr = IntArray(2)
@@ -73,41 +73,29 @@ private fun hiddenSuppressLayout(group: ViewGroup, suppress: Boolean) {
     }
 }
 
+private val vowels = arrayOf("a", "e", "i", "o", "u")
+private val consonants = arrayOf(
+    "b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r",
+    "s", "t", "v", "w", "x", "y", "z"
+)
 
 /**
- * 把当前的ViewGroup.getClipToPadding存在Tag里面，用于恢复
+ * 生成随机英文名
  */
-fun ViewGroup.storeClipToPadding() {
-    setTag(R.id.viewgroup_clip_padding, clipToPadding)
-}
-
-/**
- * 从storeClipChildren中恢复ViewGroup.getClipToPadding的值
- */
-fun ViewGroup.restoreClipToPadding() {
-    val stored = getTag(R.id.viewgroup_clip_padding)
-    if (stored is Boolean) {
-        //确认类型正确
-        clipToPadding = stored
+fun generateRandomName(): String {
+    var name = StringBuilder()
+    val length = (4..8).random() // 生成随机名字长度
+    var isVowel = false // 标记是否是元音字母
+    for (i in 0 until length) {
+        if (isVowel) {
+            name.append(consonants.random())
+            isVowel = false
+        } else {
+            name.append(vowels.random())
+            isVowel = true
+        }
     }
-    setTag(R.id.viewgroup_clip_padding, null)
-}
-
-/**
- * 存储当前的ViewGroup的Tag中的值
- */
-fun ViewGroup.storeClipChildren() {
-    setTag(R.id.viewgroup_clip_children, clipChildren)
-}
-
-/**
- * 从storeClipChildren中恢复ViewGroup.getClipChildren的值
- */
-fun ViewGroup.restoreClipChildren() {
-    val stored = getTag(R.id.viewgroup_clip_children)
-    if (stored is Boolean) {
-        clipChildren = stored
-    }
-    setTag(R.id.viewgroup_clip_children, null)
+    return name.toString()
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } // 将名字首字母大写
 }
 

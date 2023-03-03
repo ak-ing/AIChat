@@ -3,6 +3,7 @@ package com.aking.aichat.model.repository
 import com.aking.aichat.model.BaseRepository
 import com.aking.aichat.model.bean.Choice
 import com.aking.aichat.model.bean.GptResponse
+import com.aking.aichat.model.bean.GptText
 import com.aking.aichat.network.ChatApis
 import com.aking.aichat.network.RetrofitClient
 import com.google.gson.JsonObject
@@ -34,5 +35,17 @@ class ChatRepository : BaseRepository() {
         addProperty("top_p", 1)
         addProperty("frequency_penalty", 0.0)
         addProperty("presence_penalty", 0.0)
+    }
+
+    /**
+     * 构建上下文
+     */
+    fun buildContext(chats: List<GptText>, count: Int = chats.size): String {
+        val builder = StringBuilder()
+        chats.forEachIndexed { index, chat ->
+            if (index == count) return builder.toString()
+            builder.append("${chat.text}\n")
+        }
+        return builder.toString()
     }
 }
