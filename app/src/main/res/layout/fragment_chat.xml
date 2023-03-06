@@ -20,18 +20,16 @@
 
     <com.aking.aichat.ui.view.InsetsAnimationCoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackground">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chats"
-            itemDecoration="@{4}"
+            bottomDecoration="@{2}"
             submitList="@{viewModel.chatListLD}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adapter="@{adapter}"
             android:clipToPadding="false"
-            android:orientation="vertical"
             android:overScrollMode="never"
             android:paddingBottom="@dimen/grid_0_5"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

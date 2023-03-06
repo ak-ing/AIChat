@@ -38,7 +38,7 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
 
         //当点击文字输入框的时候，应用跟随着软键盘一起移动并且创造了一个更流畅的体验
         ViewCompat.setWindowInsetsAnimationCallback(
-            root, TranslateViewInsetsAnimationListener(
+            bottomAppbar, TranslateViewInsetsAnimationListener(
                 bottomAppbar, WindowInsetsCompat.Type.ime()
             )
         )
