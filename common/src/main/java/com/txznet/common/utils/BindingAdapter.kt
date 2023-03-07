@@ -13,9 +13,11 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.view.*
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 
@@ -100,6 +102,13 @@ fun RecyclerView.bindAdapter(adapter: RecyclerView.Adapter<*>) {
 fun RecyclerView.submitList(list: List<Any>?) {
     adapter ?: return
     (adapter as? ListAdapter<Any, *>)?.submitList(list)
+}
+
+@BindingAdapter(value = ["dividerItemDecoration"], requireAll = false)
+fun RecyclerView.bindDividerItemDecoration(require: Boolean) {
+    if (require) {
+        addItemDecoration(DividerItemDecoration(context, VERTICAL))
+    }
 }
 
 @BindingAdapter(value = ["bottomDecoration"], requireAll = false)
