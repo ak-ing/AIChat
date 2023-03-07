@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -18,23 +19,31 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/root_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <com.aking.aichat.ui.view.NestedRecyclerView
             android:id="@+id/rv_conversation"
+            dividerItemDecoration="@{true}"
             submitList="@{viewModel.conversationLd}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adapter="@{adapter}"
             android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
             android:overScrollMode="never"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_conversation" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fab"
+            bottomSystemWindowInsets="@{true}"
+            isInsetsMargin="@{true}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/grid_2"
             android:contentDescription="@string/des_new_chats"
             android:onClickListener="@{click::newChats}"
@@ -43,8 +52,6 @@
             android:tooltipText="@string/des_new_chats"
             app:backgroundTint="@color/reply_blue_300"
             app:icon="@drawable/ic_edit"
-            app:layout_anchor="@id/rv_conversation"
-            app:layout_anchorGravity="bottom|end"
             app:layout_behavior="com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton$ExtendedFloatingActionButtonBehavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

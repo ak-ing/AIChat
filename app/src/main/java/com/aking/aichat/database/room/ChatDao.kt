@@ -25,6 +25,9 @@ interface ChatDao {
     @Delete
     fun deleteChat(chatEntity: ChatEntity)
 
+    @Delete
+    fun deleteChats(chats: List<ChatEntity>)
+
     //编写自己的 SQL 查询(query)方法
     @Transaction
     @Query("SELECT * FROM chats ORDER BY created")

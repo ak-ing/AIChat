@@ -7,6 +7,10 @@
     <string name="title_setting">设置</string>
     <string name="title_chats">聊天</string>
 
+    <!--ChatFragment-->
+    <string name="chat_card_transition_name">chat_card_%1$s</string>
+    <string name="chat_detail_transition_name">chat_card_detail</string>
+
     <!--Description-->
     <string name="nav_open_drawer">打开侧边栏</string>
     <string name="nav_close_drawer">关闭侧边栏</string>

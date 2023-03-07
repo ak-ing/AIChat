@@ -1,5 +1,7 @@
 package com.aking.aichat.ui.page
 
+import android.graphics.Color
+import android.os.Bundle
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -12,6 +14,7 @@ import com.aking.aichat.ui.adapter.ChatAdapter
 import com.aking.aichat.ui.helper.ControlFocusInsetsAnimationCallback
 import com.aking.aichat.ui.helper.TranslateViewInsetsAnimationListener
 import com.aking.aichat.vm.ChatViewModel
+import com.google.android.material.transition.MaterialContainerTransform
 import com.txznet.common.ui.BaseVMFragment
 
 
@@ -23,6 +26,19 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
     private val args: ChatFragmentArgs by navArgs()
 
     override fun getVMExtras(): Any = args.ownerWithChat
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            // Scope the transition to a view in the hierarchy so we know it will be added under
+            // the bottom app bar but over the elevation scale of the exiting HomeFragment.
+            drawingViewId = R.id.nav_host_fragment
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            scrimColor = Color.TRANSPARENT
+            startContainerColor = requireContext().getColor(R.color.white)
+            endContainerColor = requireContext().getColor(R.color.reply_blue_50)
+        }
+    }
 
     override fun FragmentChatBinding.initView() {
         bindVariables(BR.viewModel to vm, BR.click to ClickProxy(), BR.adapter to ChatAdapter())

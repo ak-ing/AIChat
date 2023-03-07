@@ -3,6 +3,7 @@ package com.aking.aichat.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ViewConfiguration
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.absoluteValue
 
@@ -26,11 +27,8 @@ class NestedRecyclerView @JvmOverloads constructor(
             MotionEvent.ACTION_MOVE -> {
                 val tempX = e.rawX - startX
                 val tempY = e.rawY - startY
-                if (tempY.absoluteValue > tempX.absoluteValue) {
+                if (tempY.absoluteValue > tempX.absoluteValue && tempX.absoluteValue >=  ViewConfiguration.get(context).scaledTouchSlop) {
                     parent.requestDisallowInterceptTouchEvent(true)
-                } else {
-                    parent.requestDisallowInterceptTouchEvent(false)
-                    return false
                 }
             }
         }

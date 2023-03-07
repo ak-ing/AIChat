@@ -12,7 +12,7 @@ import java.io.Serializable
 data class OwnerWithChats(
     @Embedded var conversation: ConversationEntity,
     @Relation(parentColumn = "id", entityColumn = "conversationId")
-    val chat: List<ChatEntity>
+    val chat: MutableList<ChatEntity>
 ) : Serializable
 
 object ConversationCallback : DiffUtil.ItemCallback<OwnerWithChats>() {

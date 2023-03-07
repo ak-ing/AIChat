@@ -34,10 +34,16 @@ class HomeViewModel : BaseViewModel<DaoRepository>(DaoRepository()) {
     fun onMessageEvent(event: OwnerWithChats) {
         Timber.v("onMessageEvent")
         _conversation.value?.toMutableList()?.let { data ->
-            data.removeIf { it.conversation.id == event.conversation.id }
+            data.removeIf { it.conversation.id == event.conversation.id && it.conversation.timestamp != event.conversation.timestamp }
             data.add(0, event)
             _conversation.value = data
         }
+    }
+
+    fun deleteConversation(it: OwnerWithChats) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteChats(it.chat)
+        repository.deleteConversation(it.conversation)
+        _conversation.postValue(_conversation.value?.toMutableList()?.apply { remove(it) })
     }
 
     override fun onCleared() {

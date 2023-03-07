@@ -14,7 +14,7 @@ interface OwnerWithChatsDao {
 
     //编写自己的 SQL 查询(query)方法
     @Transaction
-    @Query("SELECT * FROM conversations")
+    @Query("SELECT * FROM conversations ORDER BY timestamp")
     fun getAll(): List<OwnerWithChats>
 
 

@@ -22,6 +22,10 @@ class DaoRepository : BaseRepository() {
         dao.getChatDao().deleteChat(chatEntity)
     }
 
+    suspend fun deleteChats(chats: List<ChatEntity>) {
+        dao.getChatDao().deleteChats(chats)
+    }
+
     suspend fun syncConversation(conversation: ConversationEntity) {
         if (loadById(conversation.id) != null) {
             updateConversation(conversation)

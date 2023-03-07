@@ -2,6 +2,7 @@ package com.aking.aichat.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import androidx.customview.widget.ViewDragHelper
 import androidx.drawerlayout.widget.DrawerLayout
 import com.txznet.common.utils.getWidthPixels
