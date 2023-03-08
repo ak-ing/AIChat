@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.PaintDrawable
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -98,26 +99,21 @@ fun RecyclerView.bindAdapter(adapter: RecyclerView.Adapter<*>) {
     this.adapter = adapter
 }
 
-@BindingAdapter(value = ["submitList"], requireAll = false)
-fun RecyclerView.submitList(list: List<Any>?) {
+@BindingAdapter(value = ["submitList", "keepEnd"], requireAll = false)
+fun RecyclerView.submitList(list: List<Any>?, keepEnd: Boolean) {
     adapter ?: return
-    (adapter as? ListAdapter<Any, *>)?.submitList(list)
+    (adapter as? ListAdapter<Any, *>)?.submitList(list, if (keepEnd) kotlinx.coroutines.Runnable {
+        scrollToPosition(adapter!!.itemCount - 1)
+    } else null)
 }
 
-@BindingAdapter(value = ["dividerItemDecoration"], requireAll = false)
-fun RecyclerView.bindDividerItemDecoration(require: Boolean) {
-    if (require) {
-        addItemDecoration(DividerItemDecoration(context, VERTICAL))
-    }
-}
-
-@BindingAdapter(value = ["bottomDecoration"], requireAll = false)
-fun RecyclerView.bindBottomDecoration(dp: Int) {
-    this.addItemDecoration(object : ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
-        ) {
-            outRect.bottom = dp.dp.toInt()
+@BindingAdapter(value = ["bottomDecoration", "bottomDecorationColor"], requireAll = false)
+fun RecyclerView.bindBottomDecoration(dp: Int, color: Int = 0) {
+    this.addItemDecoration(DividerItemDecoration(context, VERTICAL).apply {
+        if (color != 0) {
+            val drawable = PaintDrawable(color)
+            drawable.intrinsicHeight = dp.dp.toInt()
+            setDrawable(drawable)
         }
     })
 }

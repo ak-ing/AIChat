@@ -26,12 +26,8 @@ class DaoRepository : BaseRepository() {
         dao.getChatDao().deleteChats(chats)
     }
 
-    suspend fun syncConversation(conversation: ConversationEntity) {
-        if (loadById(conversation.id) != null) {
-            updateConversation(conversation)
-        } else {
-            dao.getConversationDao().insertConversation(conversation)
-        }
+    suspend fun insertConversation(conversationEntity: ConversationEntity) {
+        dao.getConversationDao().insertConversation(conversationEntity)
     }
 
     suspend fun updateConversation(conversationEntity: ConversationEntity) {

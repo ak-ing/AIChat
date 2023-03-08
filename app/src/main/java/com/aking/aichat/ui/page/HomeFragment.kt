@@ -6,7 +6,6 @@ import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.aking.aichat.BR
 import com.aking.aichat.R
 import com.aking.aichat.database.entity.ConversationEntity
@@ -14,6 +13,7 @@ import com.aking.aichat.database.entity.OwnerWithChats
 import com.aking.aichat.databinding.FragmentHomeBinding
 import com.aking.aichat.databinding.ItemConversationBinding
 import com.aking.aichat.ui.adapter.ConversationAdapter
+import com.aking.aichat.ui.helper.ConversationTouchHelper
 import com.aking.aichat.utl.Constants
 import com.aking.aichat.utl.generateRandomName
 import com.aking.aichat.vm.HomeViewModel
@@ -48,24 +48,13 @@ class HomeFragment : BaseVMFragment<FragmentHomeBinding, HomeViewModel>(R.layout
             BR.click to ClickProxy(),
             BR.adapter to ConversationAdapter(this@HomeFragment)
         )
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                adapter?.let {
-                    it.onItemClickListener?.onDelete(it.currentList[viewHolder.adapterPosition])
-                }
-            }
-        }).attachToRecyclerView(rvConversation)
+        ItemTouchHelper(ConversationTouchHelper(adapter!!)).attachToRecyclerView(rvConversation)
     }
 
     override fun FragmentHomeBinding.initObservable() {
     }
 
+    //会话点击
     override fun onItemClick(it: OwnerWithChats, bind: ItemConversationBinding) {
         exitTransition = MaterialElevationScale(false).apply {
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
@@ -79,8 +68,14 @@ class HomeFragment : BaseVMFragment<FragmentHomeBinding, HomeViewModel>(R.layout
         findNavController().navigate(directions, extras)
     }
 
+    //会话删除
     override fun onDelete(it: OwnerWithChats) {
         vm.deleteConversation(it)
+    }
+
+    //会话移动
+    override fun onMoved(it: List<OwnerWithChats>) {
+        vm.submitList(it)
     }
 
     inner class ClickProxy {

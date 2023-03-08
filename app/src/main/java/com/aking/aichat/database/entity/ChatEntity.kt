@@ -3,6 +3,7 @@ package com.aking.aichat.database.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.aking.aichat.model.bean.GptText
+import java.io.Serializable
 
 /**
  * Created by Rick at 2023/02/23 1:43
@@ -19,7 +20,7 @@ data class ChatEntity(
     val text: String,
     @GptText.ViewType
     val viewType: Int
-) {
+):Serializable {
     companion object {
         @JvmStatic
         fun create(gptText: GptText, conversation: ConversationEntity): ChatEntity {

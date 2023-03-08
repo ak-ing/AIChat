@@ -32,16 +32,17 @@ class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
     init {
         addCloseable(daoRepository)
         _chatListLD.value = ownerWithChats.chat.map { it.toGptText() }
-        notifyConversation()
+        initConversation()
     }
 
     /**
      * 发送问题
      */
     fun postRequest(query: String) = viewModelScope.launch {
-        val builder = repository.buildContext(chatListLD.value ?: emptyList(), 2)
+        Timber.tag("postRequest").v(query)
+        val messageContext = repository.buildContext(query, chatListLD.value ?: emptyList())
         handlerMessage(GptText.createUSER(query))
-        repository.postRequest(builder + query).onSuccess {
+        repository.postRequestTurbo(messageContext).onSuccess {
             Timber.tag("postRequest").v("$it")
             handlerMessage(GptText.createGPT(it))
         }.onError {
@@ -53,7 +54,6 @@ class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
      * 处理聊天消息
      */
     private fun handlerMessage(gptText: GptText) {
-        Timber.tag("postRequest").v("$gptText")
         chatListLD.value?.toMutableList()?.let {
             it.add(gptText)
             _chatListLD.value = it
@@ -72,9 +72,16 @@ class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
     /**
      * 通知会话数据已改变
      */
-    private fun notifyConversation() = viewModelScope.launch(Dispatchers.IO) {
-        daoRepository.syncConversation(ownerWithChats.conversation)
+    private suspend fun notifyConversation() {
+        daoRepository.updateConversation(ownerWithChats.conversation)
         EventBus.getDefault().postSticky(ownerWithChats)
+    }
+
+    private fun initConversation() = viewModelScope.launch(Dispatchers.IO) {
+        if (daoRepository.loadById(ownerWithChats.conversation.id) == null) {
+            daoRepository.insertConversation(ownerWithChats.conversation)
+            EventBus.getDefault().postSticky(ownerWithChats)
+        }
     }
 
 }

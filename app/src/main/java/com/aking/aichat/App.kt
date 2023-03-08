@@ -1,6 +1,7 @@
 package com.aking.aichat
 
 import android.app.Application
+import com.txznet.common.utils.LogUtil
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
@@ -12,6 +13,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        LogUtil.enableLog(true)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {

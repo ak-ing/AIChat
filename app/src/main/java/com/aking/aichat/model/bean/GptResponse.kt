@@ -1,13 +1,14 @@
 package com.aking.aichat.model.bean
 
 import androidx.core.util.Consumer
+import com.aking.aichat.network.MessageContext
 import java.io.Serializable
 
 /**
  * Created by Rick at 2023/02/23 2:10
  * @Description //TODO $
  */
-open class GptResponse<T>(
+open class GptResponse<T : Choices>(
     val choices: List<T> = arrayListOf(),
     val usage: Usage? = null,
     open val error: Error? = null,
@@ -67,19 +68,38 @@ open class GptResponse<T>(
     }
 }
 
-class GptEmptyResponse<T> : GptResponse<T>()
-data class GptErrorResponse<T>(override val error: Error?) : GptResponse<T>()
-
-data class Choice(
-    val finish_reason: String,
-    val index: Int,
-    val logprobs: Any,
-    val text: String
-)
-
+class GptEmptyResponse<T : Choices> : GptResponse<T>()
+data class GptErrorResponse<T : Choices>(override val error: Error?) : GptResponse<T>()
 data class Error(
     val code: Any,
     val message: String,
     val `param`: Any,
     val type: String
 )
+
+interface Choices {
+    val index: Int
+    val finish_reason: String
+    fun getContent(): String
+}
+
+data class Text(
+    override val finish_reason: String,
+    override val index: Int,
+    val logprobs: Any,
+    val text: String
+) : Choices {
+    override fun getContent(): String {
+        return text
+    }
+}
+
+data class Message(
+    override val finish_reason: String,
+    override val index: Int,
+    val message: MessageContext
+) : Choices {
+    override fun getContent(): String {
+        return message.content
+    }
+}

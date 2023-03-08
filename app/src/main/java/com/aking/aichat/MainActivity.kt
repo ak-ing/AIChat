@@ -1,9 +1,12 @@
 package com.aking.aichat
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -29,6 +32,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         initView()
+        val charSequenceExtra = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
+        val readonly = intent.getBooleanExtra(Intent.EXTRA_PROCESS_TEXT_READONLY, false)
+        Log.e("TAG", "onCreate: $charSequenceExtra", )
+        if (charSequenceExtra != null) {
+        }
     }
 
     private fun initView() {
@@ -75,11 +83,6 @@ class MainActivity : AppCompatActivity() {
                 //设置右边菜单滑动后的占据屏幕大小
                 mContent.scaleX = endScale
                 mContent.scaleY = endScale
-            }
-
-            override fun onDrawerStateChanged(newState: Int) {
-                super.onDrawerStateChanged(newState)
-//                syncState()
             }
         }
         actionBarDrawerToggle.syncState()

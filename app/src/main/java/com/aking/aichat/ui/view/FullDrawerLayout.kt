@@ -18,6 +18,10 @@ class FullDrawerLayout @JvmOverloads constructor(
 ) : DrawerLayout(context, attrs) {
     private val displayWidthPercentage = 1.0
 
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return super.onInterceptTouchEvent(ev)
+    }
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         val widthPixels = getWidthPixels()
@@ -31,11 +35,18 @@ class FullDrawerLayout @JvmOverloads constructor(
             val leftDraggerField = this::class.java.superclass.getDeclaredField("mLeftDragger")
             leftDraggerField.isAccessible = true
             val leftDragger: ViewDragHelper = leftDraggerField.get(this) as ViewDragHelper
-            val edgeSizeField = leftDragger::class.java.getDeclaredField("mDefaultEdgeSize")
-            edgeSizeField.isAccessible = true
-            val edgeSize = edgeSizeField.getInt(leftDragger)
-            val max = max(edgeSize, (widthPixels * displayWidthPercentage).toInt())
-            edgeSizeField.setInt(leftDragger, max)
+
+            val mDefaultEdgeSizeField = leftDragger::class.java.getDeclaredField("mDefaultEdgeSize")
+            mDefaultEdgeSizeField.isAccessible = true
+            val mDefaultEdgeSize = mDefaultEdgeSizeField.getInt(leftDragger)
+            val maxDefault = max(mDefaultEdgeSize, (widthPixels * displayWidthPercentage).toInt())
+            mDefaultEdgeSizeField.setInt(leftDragger, maxDefault)
+
+            val mEdgeSizeField = leftDragger::class.java.getDeclaredField("mEdgeSize")
+            mEdgeSizeField.isAccessible = true
+            val mEdgeSize = mEdgeSizeField.getInt(leftDragger)
+            val max = max(mEdgeSize, (widthPixels * displayWidthPercentage).toInt())
+            mEdgeSizeField.setInt(leftDragger, max)
             // 禁止长按滑出负一屏
             // 获取Layout的ViewDragCallBack实例mLeftCallback
             // 更改其属性mPeekRunnable
@@ -55,12 +66,20 @@ class FullDrawerLayout @JvmOverloads constructor(
         try {// displayWidthPercentage传1开启全面屏手势滑动，小于1设定滑动范围
             val rightDraggerField = this::class.java.superclass.getDeclaredField("mRightDragger")
             rightDraggerField.isAccessible = true
-            val leftDragger: ViewDragHelper = rightDraggerField.get(this) as ViewDragHelper
-            val edgeSizeField = leftDragger::class.java.getDeclaredField("mDefaultEdgeSize")
-            edgeSizeField.isAccessible = true
-            val edgeSize = edgeSizeField.getInt(leftDragger)
-            val max = max(edgeSize, (widthPixels * displayWidthPercentage).toInt())
-            edgeSizeField.setInt(leftDragger, max)
+            val rightDragger: ViewDragHelper = rightDraggerField.get(this) as ViewDragHelper
+
+            val mDefaultEdgeSizeField = rightDragger::class.java.getDeclaredField("mDefaultEdgeSize")
+            mDefaultEdgeSizeField.isAccessible = true
+            val mDefaultEdgeSize = mDefaultEdgeSizeField.getInt(rightDragger)
+            val maxDefault = max(mDefaultEdgeSize, (widthPixels * displayWidthPercentage).toInt())
+            mDefaultEdgeSizeField.setInt(rightDragger, maxDefault)
+
+            val mEdgeSizeField = rightDragger::class.java.getDeclaredField("mEdgeSize")
+            mEdgeSizeField.isAccessible = true
+            val mEdgeSize = mEdgeSizeField.getInt(rightDragger)
+            val max = max(mEdgeSize, (widthPixels * displayWidthPercentage).toInt())
+            mEdgeSizeField.setInt(rightDragger, max)
+
             // 禁止长按滑出负一屏
             val rightCallbackField = this::class.java.superclass.getDeclaredField("mRightCallback")
             rightCallbackField.isAccessible = true

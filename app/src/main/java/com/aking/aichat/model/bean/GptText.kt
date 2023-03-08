@@ -26,12 +26,12 @@ data class GptText(
         const val USER = 1
 
         @JvmStatic
-        fun createGPT(gptResponse: GptResponse<Choice>): GptText = GptText(
+        fun createGPT(gptResponse: GptResponse<out Choices>): GptText = GptText(
             gptResponse.id,
             gptResponse.created,
             gptResponse.model,
             gptResponse.choices[0].index,
-            if (gptResponse.isNotEmpty()) gptResponse.choices[0].text.trimStart() else "",
+            if (gptResponse.isNotEmpty()) gptResponse.choices[0].getContent().trimStart() else "",
             GPT
         )
 

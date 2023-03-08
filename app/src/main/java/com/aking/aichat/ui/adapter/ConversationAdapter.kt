@@ -18,6 +18,7 @@ class ConversationAdapter(var onItemClickListener: ConversationClickListener? = 
     interface ConversationClickListener {
         fun onItemClick(it: OwnerWithChats, bind: ItemConversationBinding)
         fun onDelete(it: OwnerWithChats)
+        fun onMoved(it: List<OwnerWithChats>)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder = CommonViewHolder(
