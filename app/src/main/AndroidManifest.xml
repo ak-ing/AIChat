@@ -16,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AIChat"
         tools:targetApi="31">
+
+        <!--主页面-->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,16 +25,46 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.PROCESS_TEXT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
             </intent-filter>
 
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <!--Bubble气泡页-->
+        <activity
+            android:name=".ui.BubbleActivity"
+            android:allowEmbedded="true"
+            android:exported="false"
+            android:resizeableActivity="true">
+            <intent-filter>
+                <action android:name="android.intent.action.aaaaa" />
+            </intent-filter>
+        </activity>
+
+        <!--文字选择拉起页-->
+        <activity
+            android:name=".widget.NoDisplayActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <!--聊天服务-->
+        <service
+            android:name=".widget.ChatService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.txznet.carservicesampel.bind.action" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

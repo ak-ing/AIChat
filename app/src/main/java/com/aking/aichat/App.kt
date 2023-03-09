@@ -1,7 +1,11 @@
 package com.aking.aichat
 
 import android.app.Application
+import android.content.Intent
+import android.os.Build
+import com.aking.aichat.widget.ChatService
 import com.txznet.common.utils.LogUtil
+import com.txznet.sdk.SdkAppGlobal
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
@@ -14,6 +18,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         LogUtil.enableLog(true)
+        SdkAppGlobal.init(this)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {
@@ -21,6 +26,16 @@ class App : Application() {
         }
 
         EventBus.builder().addIndex(MyEventBusIndex()).installDefaultEventBus()
+        startService()
+    }
+
+    private fun startService() {
+        val startServiceIntent = Intent(this, ChatService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(startServiceIntent)
+        } else {
+            startService(startServiceIntent)
+        }
     }
 
 }
