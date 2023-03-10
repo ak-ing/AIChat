@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.aking.aichat">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -57,7 +58,7 @@
 
         <!--聊天服务-->
         <service
-            android:name=".widget.ChatService"
+            android:name=".model.binder.ChatService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

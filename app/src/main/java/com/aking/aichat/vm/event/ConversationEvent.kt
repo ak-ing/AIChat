@@ -1,6 +1,6 @@
 package com.aking.aichat.vm.event
 
-import com.aking.aichat.database.entity.OwnerWithChats
+import com.aking.openai.database.entity.OwnerWithChats
 
 /**
  * Created by Rick on 2023-03-03  16:10.

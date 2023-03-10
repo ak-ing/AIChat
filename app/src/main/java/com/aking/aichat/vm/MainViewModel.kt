@@ -1,6 +1,6 @@
 package com.aking.aichat.vm
 
-import com.aking.aichat.model.repository.ChatRepository
+import com.aking.openai.model.repository.ChatRepository
 import com.txznet.common.vm.BaseViewModel
 
 /**

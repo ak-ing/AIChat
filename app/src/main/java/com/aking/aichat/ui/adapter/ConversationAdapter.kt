@@ -3,8 +3,8 @@ package com.aking.aichat.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.aking.aichat.database.entity.ConversationCallback
-import com.aking.aichat.database.entity.OwnerWithChats
+import com.aking.openai.database.entity.ConversationCallback
+import com.aking.openai.database.entity.OwnerWithChats
 import com.aking.aichat.databinding.ItemConversationBinding
 import com.aking.aichat.utl.CommonViewHolder
 

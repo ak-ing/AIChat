@@ -1,6 +1,5 @@
 package com.aking.aichat.widget
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -45,10 +44,8 @@ class NoDisplayActivity : Activity() {
     }
 
     private fun initBubble(charSequenceExtra: CharSequence) {
-        val chatPartner = Person.Builder()
-            .setName("Chat partner")
-            .setIcon(IconCompat.createWithResource(this, R.drawable.ic_face))
-            .setImportant(true)
+        val chatPartner = Person.Builder().setName("Chat partner")
+            .setIcon(IconCompat.createWithResource(this, R.drawable.ic_face)).setImportant(true)
             .build()
         setNotification()
         updateShortCutInfo(chatPartner)
@@ -56,51 +53,48 @@ class NoDisplayActivity : Activity() {
     }
 
     private fun setNotification() {
-        val channel = NotificationChannel(
-            CHANNEL_ID_STRING, getString(R.string.app_name),
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        notificationManager.createNotificationChannel(channel)
+        if (notificationManager.getNotificationChannel(CHANNEL_ID_STRING) == null) {
+            val channel = NotificationChannel(
+                CHANNEL_ID_STRING, getString(R.string.app_name), NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     private fun updateShortCutInfo(chatPartner: Person) {
         val intent = Intent(this, BubbleActivity::class.java)
         // Create sharing shortcut
-        val build = ShortcutInfoCompat.Builder(this, DEFAULT_ID)
-            .setShortLabel(chatPartner.name!!)
+        val build = ShortcutInfoCompat.Builder(this, DEFAULT_ID).setShortLabel(chatPartner.name!!)
             .setCategories(setOf("android.intent.category.DEFAULT"))
             .setIntent(intent.setAction("com.aking.aichat.action.BubbleActivity"))
-            .setLongLived(true)
-            .setIcon(chatPartner.icon)
-            .build()
+            .setLongLived(true).setIcon(chatPartner.icon).build()
         ShortcutManagerCompat.pushDynamicShortcut(this, build)
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     private fun showNotification(chatPartner: Person, param: CharSequence) {
         // Create bubble intent
-        val target = Intent(this, BubbleActivity::class.java)
-            .putExtra(Intent.EXTRA_PROCESS_TEXT, param)
+        val target =
+            Intent(this, BubbleActivity::class.java).putExtra(Intent.EXTRA_PROCESS_TEXT, param)
         val bubbleIntent =
-            PendingIntent.getActivity(this, 0, target, PendingIntent.FLAG_UPDATE_CURRENT /* flags */)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                PendingIntent.getActivity(
+                    this, 0, target, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                )
+            } else {
+                PendingIntent.getActivity(this, 0, target, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
 
         val messagingStyle = NotificationCompat.MessagingStyle(chatPartner)
 
         // Create bubble metadata
         val bubbleData = NotificationCompat.BubbleMetadata.Builder(bubbleIntent, chatPartner.icon!!)
-            .setDesiredHeight(600)
-            .setAutoExpandBubble(true)
-            .setSuppressNotification(true)
-            .build()
+            .setDesiredHeight(600).setAutoExpandBubble(true).setSuppressNotification(true).build()
 
         // Create notification, referencing the sharing shortcut
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID_STRING)
-            .setBubbleMetadata(bubbleData)
-            .setSmallIcon(R.drawable.ic_face)
-            .setShortcutId(DEFAULT_ID)
-            .setStyle(messagingStyle)
-            .setDefaults(DEFAULT_SOUND or DEFAULT_VIBRATE)
-            .addPerson(chatPartner)
+        val builder =
+            NotificationCompat.Builder(this, CHANNEL_ID_STRING).setBubbleMetadata(bubbleData)
+                .setSmallIcon(R.drawable.ic_face).setShortcutId(DEFAULT_ID).setStyle(messagingStyle)
+                .setDefaults(DEFAULT_SOUND or DEFAULT_VIBRATE).addPerson(chatPartner)
 
         notificationManager.notify(1573, builder.build())
     }

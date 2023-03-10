@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.aking.aichat.databinding.MessageBubbleOtherBinding
 import com.aking.aichat.databinding.MessageBubbleSelfBinding
-import com.aking.aichat.model.bean.GptDiffCallback
-import com.aking.aichat.model.bean.GptText
+import com.aking.openai.model.bean.GptDiffCallback
+import com.aking.openai.model.bean.GptText
 import com.aking.aichat.utl.CommonViewHolder
 
 /**

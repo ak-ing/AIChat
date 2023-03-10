@@ -8,13 +8,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.aking.aichat.BR
 import com.aking.aichat.R
-import com.aking.aichat.database.entity.OwnerWithChats
 import com.aking.aichat.databinding.FragmentHomeBinding
 import com.aking.aichat.databinding.ItemConversationBinding
 import com.aking.aichat.ui.adapter.ConversationAdapter
 import com.aking.aichat.ui.helper.ConversationTouchHelper
 import com.aking.aichat.utl.buildOwnerWithChats
 import com.aking.aichat.vm.HomeViewModel
+import com.aking.openai.database.entity.OwnerWithChats
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.txznet.common.ui.BaseVMFragment
@@ -82,7 +82,8 @@ class HomeFragment : BaseVMFragment<FragmentHomeBinding, HomeViewModel>(R.layout
                 reenterTransition = null
             }
 
-            val action = HomeFragmentDirections.actionNavigationHomeToNavigationChat(buildOwnerWithChats())
+            val action =
+                HomeFragmentDirections.actionNavigationHomeToNavigationChat(buildOwnerWithChats())
             findNavController().navigate(action)
         }
     }

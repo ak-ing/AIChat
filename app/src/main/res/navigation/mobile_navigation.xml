@@ -38,7 +38,7 @@
         tools:layout="@layout/fragment_chat">
         <argument
             android:name="ownerWithChat"
-            app:argType="com.aking.aichat.database.entity.OwnerWithChats" />
+            app:argType="com.aking.openai.database.entity.OwnerWithChats" />
     </fragment>
 
     <action

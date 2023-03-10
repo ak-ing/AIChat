@@ -21,8 +21,8 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
-import com.aking.aichat.database.entity.ConversationEntity
-import com.aking.aichat.database.entity.OwnerWithChats
+import com.aking.openai.database.entity.ConversationEntity
+import com.aking.openai.database.entity.OwnerWithChats
 import com.txznet.common.utils.currentSeconds
 import java.util.*
 

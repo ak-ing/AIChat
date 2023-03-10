@@ -5,10 +5,9 @@ import android.content.Intent
 import android.os.Build
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import com.aking.aichat.widget.ChatService
+import com.aking.aichat.model.binder.ChatService
+import com.aking.openai.database.ChatDatabase
 import com.txznet.common.utils.LogUtil
-import com.txznet.sdk.SdkAppGlobal
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 
@@ -22,15 +21,14 @@ class App : Application(), ViewModelStoreOwner {
     override fun onCreate() {
         super.onCreate()
         mAppViewModelStore = ViewModelStore()
+        ChatDatabase.init(this)
         LogUtil.enableLog(true)
-        SdkAppGlobal.init(this)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {
             Timber.plant(Timber.asTree())
         }
 
-        EventBus.builder().addIndex(MyEventBusIndex()).installDefaultEventBus()
         startService()
     }
 

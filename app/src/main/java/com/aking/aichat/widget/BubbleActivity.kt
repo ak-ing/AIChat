@@ -2,21 +2,33 @@ package com.aking.aichat.widget
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.aking.aichat.R
 import com.aking.aichat.ui.page.ChatFragment
 import com.aking.aichat.utl.buildOwnerWithChats
+import com.txznet.common.ui.BaseActivity
 import com.txznet.common.utils.CLASS_TAG
 import timber.log.Timber
 
-class BubbleActivity : AppCompatActivity() {
+class BubbleActivity : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bubble)
         initView()
+        Timber.tag(CLASS_TAG).e("onCreate: ")
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Timber.tag(CLASS_TAG).e("onNewIntent: ")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Timber.tag(CLASS_TAG).e("onRestart: ")
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -35,7 +47,8 @@ class BubbleActivity : AppCompatActivity() {
 
         val chatFragment = ChatFragment()
         chatFragment.arguments = bundle
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, chatFragment).commitNow()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, chatFragment)
+            .commitNow()
 
     }
 }
