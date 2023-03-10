@@ -60,7 +60,7 @@ class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
         }
         //保存数据库
         viewModelScope.launch(Dispatchers.IO) {
-            val chatEntity = ChatEntity.create(gptText, ownerWithChats.conversation)
+            val chatEntity = ChatEntity.create(gptText, ownerWithChats.conversation.id)
             daoRepository.insertChat(chatEntity)
             ownerWithChats.conversation.timestamp = gptText.created.toLong()   //同步最后时间戳
             ownerWithChats.conversation.endMessage = gptText.text

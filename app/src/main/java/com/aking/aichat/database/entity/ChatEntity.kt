@@ -20,14 +20,14 @@ data class ChatEntity(
     val text: String,
     @GptText.ViewType
     val viewType: Int
-):Serializable {
+) : Serializable {
     companion object {
         @JvmStatic
-        fun create(gptText: GptText, conversation: ConversationEntity): ChatEntity {
+        fun create(gptText: GptText, conversationID: Int): ChatEntity {
             gptText.also {
                 return ChatEntity(
                     it.id,
-                    conversation.id,
+                    conversationID,
                     it.created,
                     it.model,
                     it.index,

@@ -8,19 +8,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.aking.aichat.BR
 import com.aking.aichat.R
-import com.aking.aichat.database.entity.ConversationEntity
 import com.aking.aichat.database.entity.OwnerWithChats
 import com.aking.aichat.databinding.FragmentHomeBinding
 import com.aking.aichat.databinding.ItemConversationBinding
 import com.aking.aichat.ui.adapter.ConversationAdapter
 import com.aking.aichat.ui.helper.ConversationTouchHelper
-import com.aking.aichat.utl.Constants
-import com.aking.aichat.utl.generateRandomName
+import com.aking.aichat.utl.buildOwnerWithChats
 import com.aking.aichat.vm.HomeViewModel
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.txznet.common.ui.BaseVMFragment
-import com.txznet.common.utils.currentSeconds
 
 /**
  * Created by Rick at 2023/02/23 1:05
@@ -84,15 +81,8 @@ class HomeFragment : BaseVMFragment<FragmentHomeBinding, HomeViewModel>(R.layout
                 exitTransition = null
                 reenterTransition = null
             }
-            val randomName = generateRandomName()
-            val entity = ConversationEntity(
-                randomName.hashCode(),
-                randomName,
-                Constants.avatars.random(),
-                currentSeconds()
-            )
-            val ownerWithChats = OwnerWithChats(entity, mutableListOf())
-            val action = HomeFragmentDirections.actionNavigationHomeToNavigationChat(ownerWithChats)
+
+            val action = HomeFragmentDirections.actionNavigationHomeToNavigationChat(buildOwnerWithChats())
             findNavController().navigate(action)
         }
     }

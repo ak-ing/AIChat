@@ -15,7 +15,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.aking.aichat.R
-import com.aking.aichat.ui.BubbleActivity
+import com.txznet.common.utils.CLASS_TAG
 import timber.log.Timber
 
 /**
@@ -37,7 +37,7 @@ class NoDisplayActivity : Activity() {
         super.onCreate(savedInstanceState)
         val charSequenceExtra = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
         //val readonly = intent.getBooleanExtra(Intent.EXTRA_PROCESS_TEXT_READONLY, false)
-        Timber.v("onCreate: $charSequenceExtra")
+        Timber.tag(CLASS_TAG).v("onCreate: $charSequenceExtra")
         if (charSequenceExtra != null) {
             initBubble(charSequenceExtra)
         }
@@ -64,11 +64,12 @@ class NoDisplayActivity : Activity() {
     }
 
     private fun updateShortCutInfo(chatPartner: Person) {
+        val intent = Intent(this, BubbleActivity::class.java)
         // Create sharing shortcut
         val build = ShortcutInfoCompat.Builder(this, DEFAULT_ID)
             .setShortLabel(chatPartner.name!!)
             .setCategories(setOf("android.intent.category.DEFAULT"))
-            .setIntent(Intent(Intent.ACTION_DEFAULT))
+            .setIntent(intent.setAction("com.aking.aichat.action.BubbleActivity"))
             .setLongLived(true)
             .setIcon(chatPartner.icon)
             .build()

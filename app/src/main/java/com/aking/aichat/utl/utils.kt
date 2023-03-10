@@ -21,6 +21,9 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
+import com.aking.aichat.database.entity.ConversationEntity
+import com.aking.aichat.database.entity.OwnerWithChats
+import com.txznet.common.utils.currentSeconds
 import java.util.*
 
 
@@ -97,5 +100,17 @@ fun generateRandomName(): String {
     }
     return name.toString()
         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } // 将名字首字母大写
+}
+
+
+fun buildOwnerWithChats(): OwnerWithChats {
+    val randomName = generateRandomName()
+    val entity = ConversationEntity(
+        randomName.hashCode(),
+        randomName,
+        Constants.avatars.random(),
+        currentSeconds()
+    )
+    return OwnerWithChats(entity, mutableListOf())
 }
 

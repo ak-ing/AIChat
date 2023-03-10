@@ -67,6 +67,9 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
     }
 
     override fun FragmentChatBinding.initObservable() {
+        arguments?.getCharSequence("shortcut")?.let {
+            vm.postRequest(it.toString())
+        }
     }
 
     inner class ClickProxy {

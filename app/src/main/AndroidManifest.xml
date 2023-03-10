@@ -34,12 +34,12 @@
 
         <!--Bubble气泡页-->
         <activity
-            android:name=".ui.BubbleActivity"
+            android:name=".widget.BubbleActivity"
             android:allowEmbedded="true"
             android:exported="false"
             android:resizeableActivity="true">
             <intent-filter>
-                <action android:name="android.intent.action.aaaaa" />
+                <action android:name="com.aking.aichat.action.BubbleActivity" />
             </intent-filter>
         </activity>
 
