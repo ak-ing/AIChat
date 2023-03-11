@@ -44,8 +44,10 @@ class NoDisplayActivity : Activity() {
     }
 
     private fun initBubble(charSequenceExtra: CharSequence) {
-        val chatPartner = Person.Builder().setName("Chat partner")
-            .setIcon(IconCompat.createWithResource(this, R.drawable.ic_face)).setImportant(true)
+        val chatPartner = Person.Builder()
+            .setIcon(IconCompat.createWithResource(this, R.drawable.ic_face))
+            .setName("Chat partner")
+            .setImportant(true)
             .build()
         setNotification()
         updateShortCutInfo(chatPartner)
@@ -73,28 +75,37 @@ class NoDisplayActivity : Activity() {
 
     private fun showNotification(chatPartner: Person, param: CharSequence) {
         // Create bubble intent
-        val target =
-            Intent(this, BubbleActivity::class.java).putExtra(Intent.EXTRA_PROCESS_TEXT, param)
-        val bubbleIntent =
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                PendingIntent.getActivity(
-                    this, 0, target, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-                )
-            } else {
-                PendingIntent.getActivity(this, 0, target, PendingIntent.FLAG_UPDATE_CURRENT)
-            }
+        val target = Intent(this, BubbleActivity::class.java)
+            .putExtra(Intent.EXTRA_PROCESS_TEXT, param)
+        val bubbleIntent = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(
+                this, 0, target, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            PendingIntent.getActivity(this, 0, target, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
 
         val messagingStyle = NotificationCompat.MessagingStyle(chatPartner)
 
         // Create bubble metadata
-        val bubbleData = NotificationCompat.BubbleMetadata.Builder(bubbleIntent, chatPartner.icon!!)
-            .setDesiredHeight(600).setAutoExpandBubble(true).setSuppressNotification(true).build()
+        val bubbleData = NotificationCompat.BubbleMetadata
+            .Builder(bubbleIntent, chatPartner.icon!!)
+            .setDesiredHeight(600)
+            .setAutoExpandBubble(true)
+            .setSuppressNotification(true)
+            .build()
 
         // Create notification, referencing the sharing shortcut
-        val builder =
-            NotificationCompat.Builder(this, CHANNEL_ID_STRING).setBubbleMetadata(bubbleData)
-                .setSmallIcon(R.drawable.ic_face).setShortcutId(DEFAULT_ID).setStyle(messagingStyle)
-                .setDefaults(DEFAULT_SOUND or DEFAULT_VIBRATE).addPerson(chatPartner)
+        val builder = NotificationCompat
+            .Builder(this, CHANNEL_ID_STRING)
+            .setBubbleMetadata(bubbleData)
+            .setSmallIcon(R.drawable.ic_face)
+            .setContentIntent(bubbleIntent)
+            .setAutoCancel(true)
+            .setShortcutId(DEFAULT_ID)
+            .setStyle(messagingStyle)
+            .setDefaults(DEFAULT_SOUND or DEFAULT_VIBRATE)
+            .addPerson(chatPartner)
 
         notificationManager.notify(1573, builder.build())
     }

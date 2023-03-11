@@ -2,6 +2,8 @@ package com.aking.aichat.ui.page
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -69,6 +71,21 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
     override fun FragmentChatBinding.initObservable() {
         arguments?.getCharSequence("shortcut")?.let {
             vm.postRequest(it.toString())
+        }
+
+        var downX = 0f
+        root.setOnTouchListener { v, event ->
+            Log.d(TAG, "initObservable: ")
+            when (event.action) {
+                MotionEvent.ACTION_DOWN->{
+                    downX = event.rawX
+                }
+                MotionEvent.ACTION_MOVE->{
+                    root.x = event.rawX - downX
+                }
+            }
+            v.performClick()
+            true
         }
     }
 

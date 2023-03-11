@@ -1,0 +1,22 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.txznet.sdk" >
+4
+5    <uses-sdk
+6        android:minSdkVersion="22"
+6-->D:\android\repository\AIChat\sdk\src\main\AndroidManifest.xml
+7        android:targetSdkVersion="32" />
+7-->D:\android\repository\AIChat\sdk\src\main\AndroidManifest.xml
+8
+9    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+9-->D:\android\repository\AIChat\sdk\src\main\AndroidManifest.xml:5:5-77
+9-->D:\android\repository\AIChat\sdk\src\main\AndroidManifest.xml:5:22-74
+10
+11    <queries>
+11-->D:\android\repository\AIChat\sdk\src\main\AndroidManifest.xml:7:5-9:15
+12        <package android:name="com.txznet.carservicesampel" />
+12-->D:\android\repository\AIChat\sdk\src\main\AndroidManifest.xml:8:9-63
+12-->D:\android\repository\AIChat\sdk\src\main\AndroidManifest.xml:8:18-60
+13    </queries>
+14
+15</manifest>
