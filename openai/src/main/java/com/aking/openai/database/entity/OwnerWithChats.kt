@@ -10,14 +10,19 @@ import java.io.Serializable
  * Description: 会话
  */
 data class OwnerWithChats(
-    @Embedded var conversation: ConversationEntity,
-    @Relation(parentColumn = "id", entityColumn = "conversationId")
-    val chat: MutableList<ChatEntity>
-) : Serializable
+    @Embedded var conversation: ConversationEntity, @Relation(
+        parentColumn = "id", entityColumn = "conversationId"
+    ) val chat: MutableList<ChatEntity>
+) : Serializable {
+    fun deepCopy(): OwnerWithChats {
+        return OwnerWithChats(conversation.copy(), chat.toMutableList())
+    }
+}
 
 object ConversationCallback : DiffUtil.ItemCallback<OwnerWithChats>() {
-    override fun areItemsTheSame(oldItem: OwnerWithChats, newItem: OwnerWithChats): Boolean =
-        oldItem.conversation.id == newItem.conversation.id
+    override fun areItemsTheSame(oldItem: OwnerWithChats, newItem: OwnerWithChats): Boolean {
+        return oldItem.conversation.id == newItem.conversation.id
+    }
 
     override fun areContentsTheSame(oldItem: OwnerWithChats, newItem: OwnerWithChats): Boolean =
         oldItem == newItem

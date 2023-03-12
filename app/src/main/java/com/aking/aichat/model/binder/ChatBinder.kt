@@ -3,8 +3,6 @@ package com.aking.aichat.model.binder
 import android.os.Binder
 import android.os.IBinder
 import android.os.IInterface
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.aking.aichat.model.binder.listener.ChatCallback
 import com.aking.openai.database.entity.ChatEntity
@@ -15,7 +13,6 @@ import com.aking.openai.model.bean.Message
 import com.aking.openai.model.repository.ChatRepository
 import com.aking.openai.model.repository.DaoRepository
 import com.aking.openai.network.MessageContext
-import com.txznet.common.AppGlobal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,15 +31,20 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
      * 发送问题
      */
     fun postRequestTurbo(messages: List<MessageContext>, owner: OwnerWithChats) =
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             cacheToDb(GptText.createUSER(messages.last().content), owner)
-            repository.postRequestTurbo(messages).onSuccess {
+            cacheToDb(GptText.loading, owner)
+            val response = repository.postRequestTurbo(messages)
+            response.ownerID = owner.conversation.id
+            deleteChat(GptText.loading, owner)
+            response.onSuccess {
                 Timber.tag("postRequest onSuccess").v("$it")
-            }.onError {
-                Toast.makeText(AppGlobal.context, "${it.error?.message}", Toast.LENGTH_SHORT).show()
-            }.also {
-                dispatchReplies(it)
                 cacheToDb(GptText.createGPT(it), owner)
+                dispatchReplies(response)
+            }.onError {
+                Timber.tag("postRequest onError").v("$it")
+                cacheToDb(GptText.createEROOR("${it.error?.message}"), owner)
+                dispatchReplies(response)
             }
         }
 
@@ -59,15 +61,20 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
     /**
      * 保存数据库
      */
-    private fun cacheToDb(gptText: GptText, owner: OwnerWithChats) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val chatEntity = ChatEntity.create(gptText, owner.conversation.id)
-            daoRepository.insertChat(chatEntity)
-            owner.conversation.timestamp = gptText.created.toLong()   //同步最后时间戳
-            owner.conversation.endMessage = gptText.text
-            owner.chat.add(chatEntity)
-            notifyConversation(owner)
-        }
+    private suspend fun cacheToDb(gptText: GptText, owner: OwnerWithChats) {
+        val chatEntity = ChatEntity.create(gptText, owner.conversation.id)
+        daoRepository.insertChat(chatEntity)
+        owner.conversation.timestamp = gptText.created.toLong()   //同步最后时间戳
+        owner.conversation.endMessage = gptText.text
+        owner.chat.add(chatEntity)
+        notifyConversation(owner.deepCopy())
+    }
+
+    private suspend fun deleteChat(gptText: GptText, owner: OwnerWithChats) {
+        val chatEntity = ChatEntity.create(gptText, owner.conversation.id)
+        daoRepository.deleteChat(chatEntity)
+        owner.chat.remove(chatEntity)
+        notifyConversation(owner.deepCopy())
     }
 
     /**
@@ -86,7 +93,7 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
 //        }
 //        mChatCallbacks.finishBroadcast()
         for (mChatCallback in mChatCallbacks) {
-            Log.e("TAG", "dispatchReplies: $mChatCallback")
+            Timber.tag("TAG").e("dispatchReplies: %s", mChatCallback)
             mChatCallback?.let { it.onAIReplies(gptResponse) }
         }
     }

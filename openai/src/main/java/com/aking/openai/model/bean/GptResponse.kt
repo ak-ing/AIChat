@@ -1,6 +1,6 @@
 package com.aking.openai.model.bean
 
-import androidx.core.util.Consumer
+import com.aking.openai.network.MessageContext
 import java.io.Serializable
 
 /**
@@ -14,23 +14,28 @@ open class GptResponse<T : Choices>(
     val created: Int = 0,
     val id: String = "",
     val model: String? = null,
-    val `object`: String? = null
+    val `object`: String? = null,
+    var ownerID: Int = 0
 ) : Serializable {
     data class Usage(
         val completion_tokens: Int, val prompt_tokens: Int, val total_tokens: Int
     )
 
-    fun onSuccess(block: Consumer<GptResponse<T>>): GptResponse<T> {
-        if (this !is GptErrorResponse) block.accept(this)
+    suspend fun onSuccess(block: suspend (GptResponse<T>) -> Unit): GptResponse<T> {
+        if (this !is GptErrorResponse) block.invoke(this)
         return this
     }
 
-    fun onError(block: Consumer<GptResponse<T>>): GptResponse<T> {
-        if (this is GptErrorResponse) block.accept(this)
+    suspend fun onError(block: suspend (GptResponse<T>) -> Unit): GptResponse<T> {
+        if (this is GptErrorResponse) block.invoke(this)
         return this
     }
 
     fun isNotEmpty() = choices.isNotEmpty()
+
+    fun getText(): String = error?.message ?: choices[0].getContent().trimStart()
+
+    fun getIndex(): Int = if (error != null) -1 else choices[0].index
 
     override fun toString(): String {
         return "GptResponse(choices=$choices, usage=$usage, error=$error, created=$created, id=$id, model=$model, `object`=$`object`)"
@@ -86,9 +91,7 @@ data class Text(
 }
 
 data class Message(
-    override val finish_reason: String,
-    override val index: Int,
-    val message: com.aking.openai.network.MessageContext
+    override val finish_reason: String, override val index: Int, val message: MessageContext
 ) : Choices {
     override fun getContent(): String {
         return message.content

@@ -10,7 +10,6 @@ import com.aking.openai.model.repository.DaoRepository
 import com.txznet.common.vm.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 /**
@@ -23,18 +22,17 @@ class HomeViewModel : BaseViewModel<DaoRepository>(DaoRepository()), ChatCallbac
     val conversationLd: LiveData<List<OwnerWithChats>> get() = _conversation
 
     init {
-        ChatManager.instant.registerCallback(this)
+        ChatManager.instant.registerCallback(0,this)
         viewModelScope.launch(Dispatchers.IO) {
             _conversation.postValue(repository.getAll())
         }
     }
 
     override fun onNotifyConversation(owner: OwnerWithChats) {
-        Timber.v("onNotifyConversation $owner")
-        _conversation.value?.toMutableList()?.let { data ->
+        conversationLd.value?.toMutableList()?.let { data ->
             data.removeIf { it.conversation.id == owner.conversation.id }
             data.add(0, owner)
-            _conversation.value = data
+            _conversation.postValue(data)
         }
     }
 
@@ -44,7 +42,7 @@ class HomeViewModel : BaseViewModel<DaoRepository>(DaoRepository()), ChatCallbac
     fun deleteConversation(it: OwnerWithChats) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteChats(it.chat)
         repository.deleteConversation(it.conversation)
-        _conversation.postValue(_conversation.value?.toMutableList()?.apply { remove(it) })
+        _conversation.postValue(conversationLd.value?.toMutableList()?.apply { remove(it) })
     }
 
     /**

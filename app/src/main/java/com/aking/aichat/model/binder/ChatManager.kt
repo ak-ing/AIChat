@@ -1,6 +1,15 @@
 package com.aking.aichat.model.binder
 
+import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.IBinder
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.aking.aichat.MainActivity
+import com.aking.aichat.R
 import com.aking.aichat.model.binder.base.BaseConnectManager
 import com.aking.aichat.model.binder.listener.ChatCallback
 import com.aking.openai.database.entity.OwnerWithChats
@@ -21,27 +30,33 @@ class ChatManager : BaseConnectManager<ChatBinder>() {
     companion object {
         private const val SERVICE_PACKAGE = "com.aking.aichat"
         private const val SERVICE_CLASSNAME = "com.aking.aichat.model.binder.ChatService"
+        private const val CHANNEL_ID_STRING = "AIMessageChannel"
 
         val instant by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { ChatManager() }
     }
 
-    private val mCallbacks = mutableListOf<ChatCallback>()
+    private val mCallbacks = mutableMapOf<Int, ChatCallback>()
+    private val notificationManager: NotificationManager by lazy {
+        mApplication.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     //Dispatch Callbacks
     private val mSampleDispatchCallback: ChatCallback = object : ChatCallback {
         override fun onAIReplies(response: GptResponse<Message>) {
-            logV(TAG, "[onTemperatureChanged] $response")
+            logV(TAG, "[onAIReplies] $response")
             getMainHandler().post {
-                for (callback in mCallbacks) {
-                    callback.onAIReplies(response)
+                sendNotification(response)
+                for (mCallback in mCallbacks) {
+                    Log.e(TAG, "onAIReplies: $mCallback", )
                 }
+                mCallbacks[response.ownerID]?.onAIReplies(response)
             }
         }
 
         override fun onNotifyConversation(owner: OwnerWithChats) {
             getMainHandler().post {
-                for (callback in mCallbacks) {
-                    callback.onNotifyConversation(owner)
+                for (value in mCallbacks.values) {
+                    value?.onNotifyConversation(owner)
                 }
             }
         }
@@ -82,20 +97,19 @@ class ChatManager : BaseConnectManager<ChatBinder>() {
         }
     }
 
-    fun registerCallback(callback: ChatCallback): Boolean {
+    fun registerCallback(conversationId: Int, callback: ChatCallback): Boolean {
         return RemoteHelper.exec {
             if (isServiceConnected(true)) {
                 logV(TAG, "[registerCallback] getProxy().registerCallback ${getProxy()}")
                 val result = getProxy().registerCallback(mSampleDispatchCallback)
                 if (result) {
-                    mCallbacks.remove(callback)
-                    mCallbacks.add(callback)
+                    mCallbacks[conversationId] = callback
                 }
                 return@exec result
             } else {
                 getTaskQueue().offer {
                     logV(TAG, "[registerCallback] offer")
-                    registerCallback(callback)
+                    registerCallback(conversationId, callback)
                 }
                 return@exec false
             }
@@ -106,13 +120,45 @@ class ChatManager : BaseConnectManager<ChatBinder>() {
         logV(TAG, "[unregisterCallback]")
         return RemoteHelper.exec {
             if (isServiceConnected(true)) {
-                return@exec mCallbacks.remove(callback)
+                val values = mCallbacks.values
+                while (values.contains(callback)) {
+                    values.remove(callback)
+                }
+                return@exec true
             } else {
                 getTaskQueue().offer {
                     unregisterCallback(callback)
                 }
                 return@exec false
             }
+        }
+    }
+
+    private fun sendNotification(response: GptResponse<Message>) {
+        val notification = buildNotification(response).build()
+        notificationManager.notify(1572, notification)
+    }
+
+    private fun buildNotification(response: GptResponse<Message>): NotificationCompat.Builder {
+        val intent = Intent(mApplication, MainActivity::class.java)
+        val target = PendingIntent.getActivity(mApplication, 0, intent, PendingIntent.FLAG_MUTABLE)
+
+        setNotification()
+
+        return NotificationCompat.Builder(mApplication, CHANNEL_ID_STRING)
+            .setDefaults(NotificationCompat.DEFAULT_SOUND or NotificationCompat.DEFAULT_VIBRATE)
+            .setSmallIcon(R.drawable.ic_face).setContentText(response.getText())
+            .setContentIntent(target).setAutoCancel(true)
+    }
+
+    private fun setNotification() {
+        if (notificationManager.getNotificationChannel(CHANNEL_ID_STRING) == null) {
+            val channel = NotificationChannel(
+                CHANNEL_ID_STRING,
+                mApplication.getString(R.string.app_name),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
         }
     }
 

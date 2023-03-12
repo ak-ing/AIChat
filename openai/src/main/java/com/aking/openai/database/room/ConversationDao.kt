@@ -10,7 +10,7 @@ import com.aking.openai.database.entity.ConversationEntity
 @Dao
 interface ConversationDao {
     //新增实体
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertConversation(conversation: ConversationEntity)
 
     //新增多个实体

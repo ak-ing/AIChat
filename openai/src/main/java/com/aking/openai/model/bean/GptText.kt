@@ -14,33 +14,40 @@ data class GptText(
     val model: String? = null,
     val index: Int = 0,
     val text: String,
-    @ViewType
-    val viewType: Int
+    @ViewType val viewType: Int
 ) {
-    @IntDef(GPT, USER)
+    @IntDef(GPT, USER, LOADING, ERROR)
     @Retention(AnnotationRetention.SOURCE)
     annotation class ViewType
 
     companion object {
         const val GPT = 0
         const val USER = 1
+        const val LOADING = 2
+        const val ERROR = 3
 
         @JvmStatic
         fun createGPT(gptResponse: GptResponse<out Choices>): GptText = GptText(
             gptResponse.id,
             gptResponse.created,
             gptResponse.model,
-            gptResponse.choices[0].index,
-            if (gptResponse.isNotEmpty()) gptResponse.choices[0].getContent().trimStart() else "",
+            gptResponse.getIndex(),
+            gptResponse.getText(),
             GPT
         )
 
         @JvmStatic
         fun createUSER(query: String): GptText = GptText(
-            query.hashCode().toString(),
-            currentSeconds().toInt(),
-            text = query,
-            viewType = USER
+            currentSeconds().toString(), currentSeconds().toInt(), text = query, viewType = USER
+        )
+
+        @JvmStatic
+        fun createEROOR(error: String): GptText = GptText(
+            currentSeconds().toString(), currentSeconds().toInt(), text = error, viewType = ERROR
+        )
+
+        val loading = GptText(
+            "2", currentSeconds().toInt(), text = "思考中...", viewType = LOADING
         )
     }
 

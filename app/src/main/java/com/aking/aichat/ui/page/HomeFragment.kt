@@ -16,6 +16,7 @@ import com.aking.aichat.utl.buildOwnerWithChats
 import com.aking.aichat.vm.HomeViewModel
 import com.aking.openai.database.entity.OwnerWithChats
 import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import com.txznet.common.ui.BaseVMFragment
 
 /**
@@ -28,9 +29,9 @@ class HomeFragment : BaseVMFragment<FragmentHomeBinding, HomeViewModel>(R.layout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enterTransition = MaterialFadeThrough().apply {
-//            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-//        }
+        enterTransition = MaterialFadeThrough().apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
     }
 
     override fun FragmentHomeBinding.initView() {

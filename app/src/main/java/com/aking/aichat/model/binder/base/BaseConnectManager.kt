@@ -23,7 +23,7 @@ abstract class BaseConnectManager<T : IInterface> {
     private val TAG = CLASS_TAG
 
     private var mProxy: T? = null
-    private val mApplication: Application by lazy { AppGlobal.context }
+    protected val mApplication: Application by lazy { AppGlobal.context }
     private var mServiceListener: IServiceConnectListener? = null
     private val mChildThread: Handler
     private val mMainThread: Handler

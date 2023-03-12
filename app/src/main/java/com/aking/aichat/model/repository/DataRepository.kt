@@ -14,9 +14,9 @@ import com.txznet.common.model.BaseRepository
 class DataRepository : BaseRepository() {
     private lateinit var mChatCallback: ChatCallback
 
-    fun setChatListener(chatCallback: ChatCallback) {
+    fun setChatListener(ownerId: Int, chatCallback: ChatCallback) {
         mChatCallback = chatCallback
-        ChatManager.instant.registerCallback(mChatCallback)
+        ChatManager.instant.registerCallback(ownerId, mChatCallback)
     }
 
     fun postRequestTurbo(messages: List<MessageContext>, owner: OwnerWithChats) {
@@ -30,11 +30,7 @@ class DataRepository : BaseRepository() {
         query: String, chats: List<GptText>, count: Int = chats.size
     ): List<MessageContext> {
         val messageContext = mutableListOf<MessageContext>()
-        messageContext.add(
-            MessageContext(
-                "system", "You are a helpful assistant."
-            )
-        )
+        messageContext.add(MessageContext("system", "You are a helpful assistant."))
         chats.forEachIndexed { index, chat ->
             if (index == count) return@forEachIndexed
             val role = if (chat.viewType == GptText.USER) "user" else "assistant"

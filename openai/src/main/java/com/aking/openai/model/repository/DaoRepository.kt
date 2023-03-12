@@ -15,7 +15,7 @@ class DaoRepository : Closeable {
     private val dao = ChatDatabase.INSTANCE
 
     suspend fun insertChat(chatEntity: ChatEntity) {
-        dao.getChatDao().loadById(chatEntity.id) ?: dao.getChatDao().insertChat(chatEntity)
+        dao.getChatDao().insertChat(chatEntity)
     }
 
     suspend fun deleteChat(chatEntity: ChatEntity) {
