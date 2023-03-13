@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.aking.aichat.model.binder.ChatService
+import com.aking.aichat.utl.FilteringTimberTree
 import com.aking.openai.database.ChatDatabase
 import com.txznet.common.utils.LogUtil
 import timber.log.Timber
@@ -26,7 +27,7 @@ class App : Application(), ViewModelStoreOwner {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {
-            Timber.plant(Timber.asTree())
+            Timber.plant(FilteringTimberTree(emptyList()))
         }
 
         startService()
