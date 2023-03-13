@@ -9,7 +9,9 @@ import android.os.IInterface
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.aking.aichat.MainActivity
 import com.aking.aichat.R
@@ -155,17 +157,22 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
         setNotification()
 
         val icon = IconCompat.createWithResource(mApplication, R.drawable.ic_face)
+        val largeIcon = ContextCompat.getDrawable(mApplication, owner.conversation.avatarRes)
         return NotificationCompat.Builder(mApplication, CHANNEL_ID_STRING)
-            .setDefaults(NotificationCompat.DEFAULT_ALL).setSmallIcon(icon)
-            .setContentTitle(owner.conversation.name).setContentText(response.getText())
             .setContentIntent(target).setAutoCancel(true)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentTitle(owner.conversation.name)
+            .setContentText(response.getText())
+            .setLargeIcon(largeIcon?.toBitmap())
+            .setSmallIcon(icon)
     }
 
     private fun setNotification() {
         if (notificationManager.getNotificationChannel(CHANNEL_ID_STRING) == null) {
-            val channel = NotificationChannelCompat.Builder(
-                CHANNEL_ID_STRING, NotificationManager.IMPORTANCE_HIGH
-            ).setVibrationEnabled(true).setLightsEnabled(true)
+            val channel = NotificationChannelCompat
+                .Builder(CHANNEL_ID_STRING, NotificationManager.IMPORTANCE_HIGH)
+                .setVibrationEnabled(true)
+                .setLightsEnabled(true)
                 .setName(mApplication.getString(R.string.app_name))
             notificationManager.createNotificationChannel(channel.build())
         }

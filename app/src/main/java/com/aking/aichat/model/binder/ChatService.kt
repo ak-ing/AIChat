@@ -52,8 +52,12 @@ class ChatService : LifecycleService() {
                 .build()
 
             notificationManager.createNotificationChannel(channel)
-            val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_STRING)
-                .setSmallIcon(IconCompat.createWithResource(this, R.drawable.ic_face)).build()
+            val notification = NotificationCompat
+                .Builder(applicationContext, CHANNEL_ID_STRING)
+                .setSmallIcon(IconCompat.createWithResource(this, R.drawable.ic_face))
+                .setContentTitle("ChatService")
+                .setContentText("挂起中")
+                .build()
             startForeground(CHANNEL_ID, notification)
         }
     }

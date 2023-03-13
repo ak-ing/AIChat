@@ -7,7 +7,7 @@ package com.aking.openai.util
  */
 object Constants {
     const val API_KEY_GPT = "sk-"
-    const val API_KEY_GPT_APPEND = "0Pum4xS2bHpOhGbWFMvZT3BlbkFJMrq7bnqdwQbyWnyJI1h3"
+    const val API_KEY_GPT_APPEND = "VqB5T5lyGkUWYum6IR11T3BlbkFJAMcAFa5Q4BkK5LBvg4p5"
 
     const val DATABASE_CHAT = "room_chat_db"
 
