@@ -1,5 +1,6 @@
 package com.aking.aichat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.aking.aichat.databinding.ActivityMainBinding
+import com.aking.aichat.utl.Constants
 import com.txznet.common.utils.contentView
 
 
@@ -31,6 +33,11 @@ class MainActivity : AppCompatActivity() {
         initView()
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val extra = intent.getIntExtra(Constants.CONVERSATION_ID, -1)
+    }
+
     private fun initView() {
         val navHostFragment =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment?)!!
@@ -38,8 +45,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.let {
             appBarConfiguration = AppBarConfiguration(
                 setOf(
-                    R.id.navigation_home,
-                    R.id.navigation_setting
+                    R.id.navigation_home, R.id.navigation_setting
                 ), binding.drawerLayout
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
@@ -47,11 +53,9 @@ class MainActivity : AppCompatActivity() {
         }
         // 设置左上角图标["三" —— "←"]效果
         val actionBarDrawerToggle = object : ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
+            this, binding.drawerLayout,
             /*binding.toolbar, 传入toolbar就不会回调onOptionsItemSelected和onSupportNavigateUp */
-            R.string.nav_open_drawer,
-            R.string.nav_close_drawer
+            R.string.nav_open_drawer, R.string.nav_close_drawer
         ) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)    // 0到1 ， 1是完全展开

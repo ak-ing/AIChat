@@ -1,11 +1,12 @@
 package com.aking.aichat.model.binder
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.*
 import com.aking.aichat.R
@@ -27,8 +28,12 @@ class ChatService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         Timber.tag(CLASS_TAG).d("[onCreate]")
-        startServiceForeground()
         ProcessLifecycleOwner.get().lifecycle.addObserver(ApplicationLifecycleObserver())
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startServiceForeground()
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -38,12 +43,14 @@ class ChatService : LifecycleService() {
     }
 
     private fun startServiceForeground() {
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val channel: NotificationChannel
+        val notificationManager = NotificationManagerCompat.from(this)
+        val channel: NotificationChannelCompat
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = NotificationChannel(
-                CHANNEL_ID_STRING, getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW
-            )
+            channel = NotificationChannelCompat
+                .Builder(CHANNEL_ID_STRING, NotificationManager.IMPORTANCE_MIN)
+                .setName(getString(R.string.app_name))
+                .build()
+
             notificationManager.createNotificationChannel(channel)
             val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_STRING)
                 .setSmallIcon(IconCompat.createWithResource(this, R.drawable.ic_face)).build()

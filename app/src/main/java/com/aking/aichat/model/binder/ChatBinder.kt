@@ -1,18 +1,20 @@
 package com.aking.aichat.model.binder
 
-import android.app.Activity
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.os.IInterface
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.aking.aichat.MainActivity
 import com.aking.aichat.R
 import com.aking.aichat.model.binder.listener.ChatCallback
+import com.aking.aichat.utl.Constants.CONVERSATION_ID
 import com.aking.openai.database.entity.ChatEntity
 import com.aking.openai.database.entity.OwnerWithChats
 import com.aking.openai.model.bean.GptResponse
@@ -37,8 +39,8 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
     private val daoRepository = DaoRepository()
     private val mApplication = AppGlobal.context
     var isForeground = false
-    private val notificationManager: NotificationManager by lazy {
-        AppGlobal.context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager: NotificationManagerCompat by lazy {
+        NotificationManagerCompat.from(mApplication)
     }
 
     /**
@@ -61,7 +63,7 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
                 dispatchReplies(response)
             }
             if (!isForeground) {
-                sendNotification(response)
+                sendNotification(response, owner)
             }
         }
 
@@ -136,31 +138,36 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
         return mChatCallbacks.remove(callback)
     }
 
-    private fun sendNotification(response: GptResponse<Message>) {
-        val notification = buildNotification(response).build()
-        notificationManager.notify(1572, notification)
+    private fun sendNotification(response: GptResponse<Message>, owner: OwnerWithChats) {
+        val notification = buildNotification(response, owner).build()
+        notificationManager.notify(owner.conversation.id, notification)
     }
 
-    private fun buildNotification(response: GptResponse<Message>): NotificationCompat.Builder {
+    private fun buildNotification(
+        response: GptResponse<Message>, owner: OwnerWithChats
+    ): NotificationCompat.Builder {
         val intent = Intent(mApplication, MainActivity::class.java)
-        val target = PendingIntent.getActivity(mApplication, 0, intent, PendingIntent.FLAG_MUTABLE)
+        intent.putExtra(CONVERSATION_ID, owner.conversation.id)
+        val target = PendingIntent.getActivity(
+            mApplication, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
 
         setNotification()
 
+        val icon = IconCompat.createWithResource(mApplication, R.drawable.ic_face)
         return NotificationCompat.Builder(mApplication, CHANNEL_ID_STRING)
-            .setDefaults(NotificationCompat.DEFAULT_SOUND or NotificationCompat.DEFAULT_VIBRATE)
-            .setSmallIcon(R.drawable.ic_face).setContentText(response.getText())
+            .setDefaults(NotificationCompat.DEFAULT_ALL).setSmallIcon(icon)
+            .setContentTitle(owner.conversation.name).setContentText(response.getText())
             .setContentIntent(target).setAutoCancel(true)
     }
 
     private fun setNotification() {
         if (notificationManager.getNotificationChannel(CHANNEL_ID_STRING) == null) {
-            val channel = NotificationChannel(
-                CHANNEL_ID_STRING,
-                mApplication.getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
+            val channel = NotificationChannelCompat.Builder(
+                CHANNEL_ID_STRING, NotificationManager.IMPORTANCE_HIGH
+            ).setVibrationEnabled(true).setLightsEnabled(true)
+                .setName(mApplication.getString(R.string.app_name))
+            notificationManager.createNotificationChannel(channel.build())
         }
     }
 

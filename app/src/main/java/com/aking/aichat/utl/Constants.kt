@@ -8,7 +8,7 @@ import com.aking.aichat.R
  */
 object Constants {
 
-    const val DATABASE_CHAT = "room_chat_db"
+    const val CONVERSATION_ID = "conversation_id"
 
     val avatars = listOf(
         R.drawable.avatar_1,

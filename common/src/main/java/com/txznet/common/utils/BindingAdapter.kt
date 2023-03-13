@@ -28,30 +28,47 @@ import com.bumptech.glide.RequestBuilder
 
 
 @BindingAdapter(
-    value = ["topSystemWindowInsets", "bottomSystemWindowInsets", "isInsetsMargin"],
+    value = ["topSystemWindowInsets", "bottomSystemWindowInsets", "isInsetsMargin", "insetsValue"],
     requireAll = false
 )
-fun View.bindSystemWindowInsets(topInsets: Boolean, bottomInsets: Boolean, isInsetsMargin: Boolean = false) {
+fun View.bindSystemWindowInsets(
+    topInsets: Boolean,
+    bottomInsets: Boolean,
+    isInsetsMargin: Boolean = false,
+    insetsValue: Int = 0
+) {
     setOnApplyWindowInsetsListener { v, insets ->
         WindowInsetsCompat.toWindowInsetsCompat(insets, v).also {
-            if (isInsetsMargin) it.insetsMargin(v, topInsets, bottomInsets)
-            else it.insetsPadding(v, topInsets, bottomInsets)
+            if (isInsetsMargin) it.insetsMargin(v, topInsets, bottomInsets, insetsValue.dp.toInt())
+            else it.insetsPadding(v, topInsets, bottomInsets, insetsValue.dp.toInt())
         }
         insets
     }
 }
 
-private fun WindowInsetsCompat.insetsPadding(v: View, topInsets: Boolean, bottomInsets: Boolean) {
-    val top = if (topInsets) getInsets(WindowInsetsCompat.Type.statusBars()).top else v.paddingTop
+private fun WindowInsetsCompat.insetsPadding(
+    v: View,
+    topInsets: Boolean,
+    bottomInsets: Boolean,
+    insetsValue: Int
+) {
+    val top =
+        if (topInsets) getInsets(WindowInsetsCompat.Type.statusBars()).top + insetsValue else v.paddingTop
     val bottom =
-        if (bottomInsets) getInsets(WindowInsetsCompat.Type.navigationBars()).bottom else v.paddingBottom
+        if (bottomInsets) getInsets(WindowInsetsCompat.Type.navigationBars()).bottom + insetsValue else v.paddingBottom
     if (topInsets || bottomInsets) v.updatePadding(top = top, bottom = bottom)
 }
 
-private fun WindowInsetsCompat.insetsMargin(v: View, topInsets: Boolean, bottomInsets: Boolean) {
-    val top = if (topInsets) getInsets(WindowInsetsCompat.Type.statusBars()).top else v.marginTop
+private fun WindowInsetsCompat.insetsMargin(
+    v: View,
+    topInsets: Boolean,
+    bottomInsets: Boolean,
+    insetsValue: Int
+) {
+    val top =
+        if (topInsets) getInsets(WindowInsetsCompat.Type.statusBars()).top + insetsValue else v.marginTop
     val bottom =
-        if (bottomInsets) getInsets(WindowInsetsCompat.Type.navigationBars()).bottom else v.marginBottom
+        if (bottomInsets) getInsets(WindowInsetsCompat.Type.navigationBars()).bottom + insetsValue else v.marginBottom
     if (topInsets || bottomInsets) v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
         topMargin = top
         bottomMargin = bottom
@@ -149,7 +166,11 @@ fun View.bindShowIf(show: Boolean) {
  * 点击防抖
  */
 @BindingAdapter(
-    "debouncingClick", "debouncingDuration", "debouncingWithEnable", "debouncingCountDown", requireAll = false
+    "debouncingClick",
+    "debouncingDuration",
+    "debouncingWithEnable",
+    "debouncingCountDown",
+    requireAll = false
 )
 fun View.bindClickDebouncing(
     clickListener: View.OnClickListener,

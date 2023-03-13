@@ -24,7 +24,7 @@ class HomeViewModel : BaseViewModel<DaoRepository>(DaoRepository()), ChatCallbac
     init {
         ChatManager.instant.registerCallback(0,this)
         viewModelScope.launch(Dispatchers.IO) {
-            _conversation.postValue(repository.getAll())
+            _conversation.postValue(repository.getAll()!!)
         }
     }
 
