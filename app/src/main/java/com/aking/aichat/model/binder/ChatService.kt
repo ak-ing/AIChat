@@ -7,8 +7,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
-import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import com.aking.aichat.R
 import com.txznet.common.utils.CLASS_TAG
 import timber.log.Timber
@@ -27,8 +26,9 @@ class ChatService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        startServiceForeground()
         Timber.tag(CLASS_TAG).d("[onCreate]")
+        startServiceForeground()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(ApplicationLifecycleObserver())
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -48,6 +48,20 @@ class ChatService : LifecycleService() {
             val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_STRING)
                 .setSmallIcon(IconCompat.createWithResource(this, R.drawable.ic_face)).build()
             startForeground(CHANNEL_ID, notification)
+        }
+    }
+
+    private inner class ApplicationLifecycleObserver : DefaultLifecycleObserver {
+        override fun onStart(owner: LifecycleOwner) {
+            super.onStart(owner)
+            //应用移至前台
+            binder.isForeground = true
+        }
+
+        override fun onStop(owner: LifecycleOwner) {
+            super.onStop(owner)
+            //应用移至后台
+            binder.isForeground = false
         }
     }
 

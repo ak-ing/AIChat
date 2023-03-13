@@ -67,6 +67,7 @@ class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
      * 处理聊天消息
      */
     private suspend fun handlerMessage(gptText: GptText) {
+        Timber.v("handlerMessage: ${gptText.viewType}")
         chatListLD.value?.toMutableList()?.let {
             when (gptText.viewType) {
                 USER -> {

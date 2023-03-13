@@ -1,9 +1,17 @@
 package com.aking.aichat.model.binder
 
+import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.os.IInterface
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.aking.aichat.MainActivity
+import com.aking.aichat.R
 import com.aking.aichat.model.binder.listener.ChatCallback
 import com.aking.openai.database.entity.ChatEntity
 import com.aking.openai.database.entity.OwnerWithChats
@@ -13,6 +21,7 @@ import com.aking.openai.model.bean.Message
 import com.aking.openai.model.repository.ChatRepository
 import com.aking.openai.model.repository.DaoRepository
 import com.aking.openai.network.MessageContext
+import com.txznet.common.AppGlobal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -26,6 +35,11 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
     private val mChatCallbacks = mutableListOf<ChatCallback>()
     private val repository = ChatRepository()
     private val daoRepository = DaoRepository()
+    private val mApplication = AppGlobal.context
+    var isForeground = false
+    private val notificationManager: NotificationManager by lazy {
+        AppGlobal.context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     /**
      * 发送问题
@@ -45,6 +59,9 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
                 Timber.tag("postRequest onError").v("$it")
                 cacheToDb(GptText.createEROOR("${it.error?.message}"), owner)
                 dispatchReplies(response)
+            }
+            if (!isForeground) {
+                sendNotification(response)
             }
         }
 
@@ -119,5 +136,37 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
         return mChatCallbacks.remove(callback)
     }
 
+    private fun sendNotification(response: GptResponse<Message>) {
+        val notification = buildNotification(response).build()
+        notificationManager.notify(1572, notification)
+    }
+
+    private fun buildNotification(response: GptResponse<Message>): NotificationCompat.Builder {
+        val intent = Intent(mApplication, MainActivity::class.java)
+        val target = PendingIntent.getActivity(mApplication, 0, intent, PendingIntent.FLAG_MUTABLE)
+
+        setNotification()
+
+        return NotificationCompat.Builder(mApplication, CHANNEL_ID_STRING)
+            .setDefaults(NotificationCompat.DEFAULT_SOUND or NotificationCompat.DEFAULT_VIBRATE)
+            .setSmallIcon(R.drawable.ic_face).setContentText(response.getText())
+            .setContentIntent(target).setAutoCancel(true)
+    }
+
+    private fun setNotification() {
+        if (notificationManager.getNotificationChannel(CHANNEL_ID_STRING) == null) {
+            val channel = NotificationChannel(
+                CHANNEL_ID_STRING,
+                mApplication.getString(R.string.app_name),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
     override fun asBinder(): IBinder = this
+
+    companion object {
+        private const val CHANNEL_ID_STRING = "AIMessageChannel"
+    }
 }
