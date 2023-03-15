@@ -17,6 +17,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.aking.aichat.databinding.ActivityMainBinding
+import com.aking.aichat.utl.AlertWindowUtil
 import com.aking.aichat.utl.Constants
 import com.txznet.common.utils.contentView
 
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         initView()
+        AlertWindowUtil.checkSuspendedWindowPermission(this)
     }
 
     override fun onNewIntent(intent: Intent) {

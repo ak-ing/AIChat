@@ -6,6 +6,7 @@ import com.aking.openai.model.bean.Text
 import com.aking.openai.util.Constants
 import com.google.gson.JsonObject
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
@@ -14,17 +15,18 @@ import retrofit2.http.POST
  * @Description OpenAi ChatGPT接口
  */
 interface ChatApis {
-    @Headers(
-        "Content-Type:application/json",
-        "Authorization:Bearer ${Constants.API_KEY_GPT}${Constants.API_KEY_GPT_APPEND}"
-    )
+    @Headers("Content-Type:application/json")
     @POST("v1/completions")
-    suspend fun postRequest(@Body jsonData: JsonObject): GptResponse<Text>
+    suspend fun postRequest(
+        @Body jsonData: JsonObject,
+        @Header("Authorization") apikey: String = "Bearer " + Constants.getAPIKey()
+    ): GptResponse<Text>
 
-    @Headers(
-        "Content-Type:application/json",
-        "Authorization:Bearer ${Constants.API_KEY_GPT}${Constants.API_KEY_GPT_APPEND}"
-    )
+    @Headers("Content-Type:application/json")
     @POST("/v1/chat/completions")
-    suspend fun postRequestTurbo(@Body jsonData: JsonObject): GptResponse<Message>
+    suspend fun postRequestTurbo(
+        @Body jsonData: JsonObject,
+        @Header("Authorization") apikey: String = "Bearer " + Constants.getAPIKey()
+    ): GptResponse<Message>
+
 }

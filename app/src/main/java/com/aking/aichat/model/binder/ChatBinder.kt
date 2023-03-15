@@ -64,9 +64,8 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
                 cacheToDb(GptText.createEROOR("${it.error?.message}"), owner)
                 dispatchReplies(response)
             }
-            if (!isForeground) {
-                sendNotification(response, owner)
-            }
+
+            sendNotification(response, owner)
         }
 
     /**

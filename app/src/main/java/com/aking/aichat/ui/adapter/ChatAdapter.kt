@@ -36,6 +36,7 @@ class ChatAdapter : ListAdapter<GptText, CommonViewHolder>(GptDiffCallback) {
 
     override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
         holder.bind(getItem(position))
+        holder.adapterPosition
     }
 
     override fun getItemViewType(position: Int): Int {

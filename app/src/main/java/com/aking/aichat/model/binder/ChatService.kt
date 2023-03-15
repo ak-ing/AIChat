@@ -1,15 +1,17 @@
 package com.aking.aichat.model.binder
 
 import android.app.NotificationManager
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
+import android.os.*
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.*
 import com.aking.aichat.R
+import com.aking.aichat.ui.helper.FloatViewManager
 import com.txznet.common.utils.CLASS_TAG
 import timber.log.Timber
 
@@ -21,14 +23,29 @@ class ChatService : LifecycleService() {
     companion object {
         private const val CHANNEL_ID_STRING = "SimpleService"
         private const val CHANNEL_ID = 0x11
+        private const val MESSAGE_CLIP = 0x111
     }
 
+    private val mainHandle = object : Handler(Looper.myLooper()!!) {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            if (MESSAGE_CLIP == msg.what) {
+                handlerFloatView()
+            }
+        }
+    }
     private val binder by lazy { ChatBinder(lifecycleScope) }
+    private val mClipboardManager by lazy { getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager }
+    private val floatingManager by lazy { FloatViewManager(applicationContext) }
 
     override fun onCreate() {
         super.onCreate()
         Timber.tag(CLASS_TAG).d("[onCreate]")
         ProcessLifecycleOwner.get().lifecycle.addObserver(ApplicationLifecycleObserver())
+        mClipboardManager.addPrimaryClipChangedListener {
+            mainHandle.removeCallbacksAndMessages(null)
+            mainHandle.postDelayed(::handlerFloatView, 100)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -40,6 +57,12 @@ class ChatService : LifecycleService() {
         super.onBind(intent)
         Timber.tag(CLASS_TAG).d("[onBind]")
         return binder
+    }
+
+    private fun handlerFloatView() {
+        mClipboardManager.primaryClip?.let {
+            floatingManager.show("${it.getItemAt(0).text}")
+        }
     }
 
     private fun startServiceForeground() {
