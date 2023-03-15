@@ -4,7 +4,10 @@ import android.app.NotificationManager
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -23,34 +26,22 @@ class ChatService : LifecycleService() {
     companion object {
         private const val CHANNEL_ID_STRING = "SimpleService"
         private const val CHANNEL_ID = 0x11
-        private const val MESSAGE_CLIP = 0x111
     }
 
-    private val mainHandle = object : Handler(Looper.myLooper()!!) {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            if (MESSAGE_CLIP == msg.what) {
-                handlerFloatView()
-            }
-        }
-    }
+    private val mainHandle = Handler(Looper.myLooper()!!)
     private val binder by lazy { ChatBinder(lifecycleScope) }
     private val mClipboardManager by lazy { getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager }
     private val floatingManager by lazy { FloatViewManager(applicationContext) }
 
     override fun onCreate() {
         super.onCreate()
+        startServiceForeground()
         Timber.tag(CLASS_TAG).d("[onCreate]")
         ProcessLifecycleOwner.get().lifecycle.addObserver(ApplicationLifecycleObserver())
         mClipboardManager.addPrimaryClipChangedListener {
             mainHandle.removeCallbacksAndMessages(null)
             mainHandle.postDelayed(::handlerFloatView, 100)
         }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startServiceForeground()
-        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -69,18 +60,15 @@ class ChatService : LifecycleService() {
         val notificationManager = NotificationManagerCompat.from(this)
         val channel: NotificationChannelCompat
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = NotificationChannelCompat
-                .Builder(CHANNEL_ID_STRING, NotificationManager.IMPORTANCE_MIN)
-                .setName(getString(R.string.app_name))
-                .build()
+            channel = NotificationChannelCompat.Builder(
+                    CHANNEL_ID_STRING,
+                    NotificationManager.IMPORTANCE_MIN
+                ).setName(getString(R.string.app_name)).build()
 
             notificationManager.createNotificationChannel(channel)
-            val notification = NotificationCompat
-                .Builder(applicationContext, CHANNEL_ID_STRING)
+            val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_STRING)
                 .setSmallIcon(IconCompat.createWithResource(this, R.drawable.ic_face))
-                .setContentTitle("ChatService")
-                .setContentText("挂起中")
-                .build()
+                .setContentTitle("ChatService").setContentText("挂起中").build()
             startForeground(CHANNEL_ID, notification)
         }
     }
