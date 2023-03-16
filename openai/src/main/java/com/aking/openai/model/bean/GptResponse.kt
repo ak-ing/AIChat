@@ -1,6 +1,7 @@
 package com.aking.openai.model.bean
 
 import com.aking.openai.network.MessageContext
+import com.aking.openai.util.ERROR
 import java.io.Serializable
 
 /**
@@ -74,7 +75,9 @@ class GptEmptyResponse<T : Choices> : GptResponse<T>()
 data class GptErrorResponse<T : Choices>(override val error: Error?) : GptResponse<T>()
 data class Error(
     val code: Any, val message: String, val `param`: Any, val type: String
-)
+) {
+    constructor(error: ERROR, param: Any) : this(error.getKey(), error.getValue(), param, "")
+}
 
 interface Choices {
     val index: Int

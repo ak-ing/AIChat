@@ -1,7 +1,11 @@
 package com.aking.openai.model
 
 import com.aking.openai.BuildConfig
-import com.aking.openai.model.bean.*
+import com.aking.openai.model.bean.Choices
+import com.aking.openai.model.bean.GptEmptyResponse
+import com.aking.openai.model.bean.GptErrorResponse
+import com.aking.openai.model.bean.GptResponse
+import com.aking.openai.util.ExceptionHandle
 import timber.log.Timber
 import java.io.Closeable
 
@@ -34,7 +38,7 @@ open class BaseRepository : Closeable {
      */
     private fun <T : Choices> handleHttpError(e: Throwable): GptErrorResponse<T> {
         if (BuildConfig.DEBUG) e.printStackTrace()
-        return GptErrorResponse(Error(0, "${e.message}", e, ""))
+        return GptErrorResponse(ExceptionHandle.handleException(e))
     }
 
     /**

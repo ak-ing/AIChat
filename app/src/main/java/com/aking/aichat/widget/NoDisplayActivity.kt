@@ -15,6 +15,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.aking.aichat.R
+import com.aking.aichat.ui.view.FloatViewManager
 import com.txznet.common.utils.CLASS_TAG
 import timber.log.Timber
 
@@ -32,6 +33,7 @@ class NoDisplayActivity : Activity() {
     private val notificationManager: NotificationManagerCompat by lazy {
         NotificationManagerCompat.from(this)
     }
+    private val floatingManager by lazy { FloatViewManager(applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +41,11 @@ class NoDisplayActivity : Activity() {
         //val readonly = intent.getBooleanExtra(Intent.EXTRA_PROCESS_TEXT_READONLY, false)
         Timber.tag(CLASS_TAG).v("onCreate: $charSequenceExtra")
         if (charSequenceExtra != null) {
-            initBubble(charSequenceExtra)
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+//                initBubble(charSequenceExtra)
+//            } else {
+                floatingManager.show()
+//            }
         }
         finish()
     }
@@ -56,9 +62,9 @@ class NoDisplayActivity : Activity() {
     private fun setNotification() {
         if (notificationManager.getNotificationChannel(CHANNEL_ID_STRING) == null) {
             val channel = NotificationChannelCompat.Builder(
-                    CHANNEL_ID_STRING,
-                    NotificationManager.IMPORTANCE_HIGH
-                ).setName(getString(R.string.app_name)).build()
+                CHANNEL_ID_STRING,
+                NotificationManager.IMPORTANCE_HIGH
+            ).setName(getString(R.string.app_name)).build()
             notificationManager.createNotificationChannel(channel)
         }
     }

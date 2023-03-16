@@ -20,6 +20,7 @@
 
     <com.aking.aichat.ui.view.InsetsAnimationCoordinatorLayout
         android:layout_width="match_parent"
+        android:background="@color/reply_blue_600"
         android:layout_height="match_parent"
         android:transitionName="@string/chat_detail_transition_name">
 
@@ -43,6 +44,7 @@
             android:id="@+id/bottom_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:theme="@style/Theme.AIChat"
             android:layout_gravity="bottom"
             app:backgroundTint="@color/reply_blue_100"
             app:contentInsetStart="0dp"
@@ -65,6 +67,7 @@
                     android:clickable="true"
                     android:contentDescription="@string/des_voice_input"
                     android:focusable="true"
+                    android:onClickListener="@{click::clickVoice}"
                     android:padding="@dimen/min_icon_target_padding"
                     android:tooltipText="@string/des_voice_input"
                     app:layout_constraintEnd_toEndOf="parent"
