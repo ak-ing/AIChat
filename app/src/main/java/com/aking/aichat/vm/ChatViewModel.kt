@@ -50,6 +50,10 @@ class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
         }
     }
 
+    override fun onNotifyConversation(owner: OwnerWithChats) {
+        _chatListLD.postValue(owner.chat.map { it.toGptText() })
+    }
+
     /**
      * 发送问题
      */
@@ -81,6 +85,7 @@ class ChatViewModel(private val ownerWithChats: OwnerWithChats) :
                 }
                 GPT, ERROR -> {
                     it.remove(loading)
+                    if (it.contains(gptText)) return
                     it.add(gptText)
                     _chatListLD.value = it
                 }

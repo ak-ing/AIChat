@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Components-->
+    <style name="dialog_style" parent="Theme.AIChat">
+        <!-- Dialog的windowFrame框为无 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 是否半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- 背景是否模糊显示 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!--控制当用户触摸容器外部时，容器是否应自动关闭-->
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@drawable/shape_round</item>
+    </style>
 </resources>

@@ -8,7 +8,7 @@ import okio.ByteString.Companion.decodeBase64
  * Description:
  */
 object Constants {
-    const val API_KEY_GPT = "c2stUjVNbVpsbWRnb3N2Nm9Cb0UwUExUM0JsYmtGSlJSbWVKenZrZGNucGNaNXMxdldM"
+    private const val API_KEY_GPT = "c2stUjVNbVpsbWRnb3N2Nm9Cb0UwUExUM0JsYmtGSlJSbWVKenZrZGNucGNaNXMxdldM"
 
     const val DATABASE_CHAT = "room_chat_db"
 

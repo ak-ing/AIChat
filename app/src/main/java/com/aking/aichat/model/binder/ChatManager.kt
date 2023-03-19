@@ -5,6 +5,7 @@ import com.aking.aichat.model.binder.base.BaseConnectManager
 import com.aking.aichat.model.binder.listener.ChatCallback
 import com.aking.openai.database.entity.OwnerWithChats
 import com.aking.openai.model.bean.GptResponse
+import com.aking.openai.model.bean.GptText
 import com.aking.openai.model.bean.Message
 import com.aking.openai.network.MessageContext
 import com.txznet.common.utils.CLASS_TAG
@@ -77,6 +78,20 @@ class ChatManager : BaseConnectManager<ChatBinder>() {
         tryExec {
             logV(TAG, "[newChatIf] getProxy().newChatIf ${getProxy()}")
             getProxy().newChatIf(owner)
+        }
+    }
+
+    fun insertChat(gptText: GptText, owner: OwnerWithChats) {
+        tryExec {
+            logV(TAG, "[postRequest] getProxy().insertChat ${getProxy()}")
+            getProxy().launchInsertChat(gptText, owner)
+        }
+    }
+
+    fun deleteChat(gptText: GptText, owner: OwnerWithChats) {
+        tryExec {
+            logV(TAG, "[postRequest] getProxy().deleteChat ${getProxy()}")
+            getProxy().launchDeleteChat(gptText, owner)
         }
     }
 

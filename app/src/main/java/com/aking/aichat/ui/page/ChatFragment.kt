@@ -14,17 +14,25 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.aking.aichat.BR
 import com.aking.aichat.R
+import com.aking.aichat.databinding.DialogVoiceBinding
 import com.aking.aichat.databinding.FragmentChatBinding
+import com.aking.aichat.model.binder.ChatManager
 import com.aking.aichat.ui.adapter.ChatAdapter
+import com.aking.aichat.ui.helper.ChatsTouchHelper
 import com.aking.aichat.ui.helper.ControlFocusInsetsAnimationCallback
 import com.aking.aichat.ui.helper.TranslateViewInsetsAnimationListener
 import com.aking.aichat.vm.ChatViewModel
+import com.aking.openai.model.bean.GptText
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.txznet.common.ui.BaseVMFragment
 import timber.log.Timber
@@ -34,11 +42,14 @@ import timber.log.Timber
  * Created by Rick on 2023-02-24  16:09.
  * Description:
  */
-class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout.fragment_chat) {
+class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout.fragment_chat),
+    ChatAdapter.ChatClickListener {
+    var hasFocus = false
     private val args: ChatFragmentArgs by navArgs()
     private lateinit var mSpeechRecognizer: SpeechRecognizer
     private lateinit var mRecognitionIntent: Intent
-
+    private lateinit var dialog: AlertDialog
+    private lateinit var dialogContent: DialogVoiceBinding
     override fun getVMExtras(): Any = args.ownerWithChat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +66,26 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
     }
 
     override fun FragmentChatBinding.initView() {
-        bindVariables(BR.viewModel to vm, BR.click to ClickProxy(), BR.adapter to ChatAdapter())
+        bindVariables(
+            BR.viewModel to vm,
+            BR.click to ClickProxy(),
+            BR.adapter to ChatAdapter(this@ChatFragment)
+        )
+        ItemTouchHelper(ChatsTouchHelper(adapter!!)).attachToRecyclerView(rvChats)
+
+        dialogContent = DialogVoiceBinding.inflate(layoutInflater)
+        dialog = MaterialAlertDialogBuilder(requireContext())
+            .setNegativeButton(getString(R.string.text_replace)) { _, _ ->
+                editMessage.setText(dialogContent.tvVoice.text)
+            }.setPositiveButton(getString(R.string.text_input)) { _, _ ->
+                editMessage.text.append(dialogContent.tvVoice.text)
+            }.setTitle(getString(R.string.des_voice_input)).setIcon(R.drawable.ic_mic)
+            .setView(dialogContent.root).create()
+
+        if (hasFocus) {
+            editMessage.requestFocus()
+            return
+        }
 
         //OnApplyWindowInsetsListener会自动更新我们的根视图向上移动，根据输入法和底部虚拟导航栏的size
         root.setOnApplyWindowInsetsListener { rootView, windowInsets ->    /*BottomAppBar设置wrap_content同样效果*/
@@ -84,6 +114,13 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
         arguments?.getCharSequence("shortcut")?.let {
             vm.postRequest(it.toString())
         }
+    }
+
+    override fun onDelete(it: GptText) {
+        ChatManager.instant.deleteChat(it, args.ownerWithChat)
+        Snackbar.make(binding.root, "消息已删除", Snackbar.LENGTH_LONG).setAction("撤销") { _ ->
+            ChatManager.instant.insertChat(it, args.ownerWithChat)
+        }.setAnchorView(binding.bottomAppbar).show()
     }
 
     inner class ClickProxy {
@@ -142,7 +179,8 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
 
         // 查找得到的 "可用的" 语音识别服务
         val intent = Intent(RecognitionService.SERVICE_INTERFACE)
-        val list = requireContext().packageManager.queryIntentServices(intent, MATCH_ALL) ?: emptyList()
+        val list =
+            requireContext().packageManager.queryIntentServices(intent, MATCH_ALL) ?: emptyList()
         if (list.isNotEmpty()) {
             for (info in list) {
                 Timber.v("${info.loadLabel(context?.packageManager)} ${info.serviceInfo.packageName} ${info.serviceInfo.name}")
@@ -152,7 +190,8 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
                     break
                 } else {
                     if (currentRecognitionCmp != null) continue
-                    currentRecognitionCmp = ComponentName(info.serviceInfo.packageName, info.serviceInfo.name)
+                    currentRecognitionCmp =
+                        ComponentName(info.serviceInfo.packageName, info.serviceInfo.name)
                 }
             }
         } else {
@@ -171,6 +210,8 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
         mSpeechRecognizer.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) {
                 Timber.v("onReadyForSpeech")
+                dialog.show()
+                dialogContent.lottieVoice.playAnimation()
             }
 
             override fun onBeginningOfSpeech() {
@@ -185,26 +226,32 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
 
             override fun onEndOfSpeech() {
                 Timber.v("onEndOfSpeech")
+                dialogContent.lottieVoice.cancelAnimation()
             }
 
             override fun onError(error: Int) {
                 Timber.e("onError:$error")
+                dialogContent.lottieVoice.cancelAnimation()
+                dialog.dismiss()
             }
 
             override fun onResults(results: Bundle) {
-                val partialResults = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                val partialResults =
+                    results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (partialResults != null && partialResults.size > 0) {
                     val bestResult = partialResults[0]
-                    Timber.i("SpeechRecognition", "onResults bestResult=$bestResult")
+                    Timber.tag("SpeechRecognition").i("onResults bestResult=$bestResult")
+                    dialogContent.tvVoice.text = bestResult
                 }
             }
 
             override fun onPartialResults(partialResults: Bundle) {
-                val results = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                val results =
+                    partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (results != null && results.size > 0) {
                     val bestResult = results[0]
-                    Timber.i("SpeechRecognition", "onPartialResults bestResult=$bestResult")
-                    binding.editMessage.text.append(bestResult)
+                    Timber.tag("SpeechRecognition").i("onPartialResults bestResult=$bestResult")
+                    dialogContent.tvVoice.text = bestResult
                 }
             }
 
@@ -216,8 +263,7 @@ class ChatFragment : BaseVMFragment<FragmentChatBinding, ChatViewModel>(R.layout
         if (!::mRecognitionIntent.isInitialized) {
             mRecognitionIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             mRecognitionIntent.putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             mRecognitionIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             mRecognitionIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)

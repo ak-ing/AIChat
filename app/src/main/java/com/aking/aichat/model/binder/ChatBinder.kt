@@ -25,6 +25,7 @@ import com.aking.openai.model.bean.Message
 import com.aking.openai.model.repository.ChatRepository
 import com.aking.openai.model.repository.DaoRepository
 import com.aking.openai.network.MessageContext
+import com.aking.openai.util.currentSeconds
 import com.txznet.common.AppGlobal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -94,7 +95,25 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
         val chatEntity = ChatEntity.create(gptText, owner.conversation.id)
         daoRepository.deleteChat(chatEntity)
         owner.chat.remove(chatEntity)
+        val entity = owner.chat.lastOrNull()
+        if (entity != null) {
+            owner.conversation.timestamp = entity.created.toLong()   //同步最后时间戳
+            owner.conversation.endMessage = entity.text
+        } else {
+            owner.conversation.timestamp = currentSeconds()   //同步最后时间戳
+            owner.conversation.endMessage = ""
+        }
         notifyConversation(owner.deepCopy())
+    }
+
+    fun launchDeleteChat(gptText: GptText, owner: OwnerWithChats) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            deleteChat(gptText, owner)
+        }
+    }
+
+    fun launchInsertChat(gptText: GptText, owner: OwnerWithChats) {
+        lifecycleScope.launch(Dispatchers.IO) { cacheToDb(gptText, owner) }
     }
 
     /**
@@ -157,21 +176,17 @@ class ChatBinder(private val lifecycleScope: LifecycleCoroutineScope) : Binder()
 
         val icon = IconCompat.createWithResource(mApplication, R.drawable.ic_face)
         val largeIcon = ContextCompat.getDrawable(mApplication, owner.conversation.avatarRes)
-        return NotificationCompat.Builder(mApplication, CHANNEL_ID_STRING)
-            .setContentIntent(target).setAutoCancel(true)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            .setContentTitle(owner.conversation.name)
-            .setContentText(response.getText())
-            .setLargeIcon(largeIcon?.toBitmap())
-            .setSmallIcon(icon)
+        return NotificationCompat.Builder(mApplication, CHANNEL_ID_STRING).setContentIntent(target)
+            .setAutoCancel(true).setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentTitle(owner.conversation.name).setContentText(response.getText())
+            .setLargeIcon(largeIcon?.toBitmap()).setSmallIcon(icon)
     }
 
     private fun setNotification() {
         if (notificationManager.getNotificationChannel(CHANNEL_ID_STRING) == null) {
-            val channel = NotificationChannelCompat
-                .Builder(CHANNEL_ID_STRING, NotificationManager.IMPORTANCE_HIGH)
-                .setVibrationEnabled(true)
-                .setLightsEnabled(true)
+            val channel = NotificationChannelCompat.Builder(
+                CHANNEL_ID_STRING, NotificationManager.IMPORTANCE_HIGH
+            ).setVibrationEnabled(true).setLightsEnabled(true)
                 .setName(mApplication.getString(R.string.app_name))
             notificationManager.createNotificationChannel(channel.build())
         }

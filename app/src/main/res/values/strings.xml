@@ -21,4 +21,6 @@
 
     <!--text-->
     <string name="text_message_hint">消息</string>
+    <string name="text_replace">替换</string>
+    <string name="text_input">输入</string>
 </resources>

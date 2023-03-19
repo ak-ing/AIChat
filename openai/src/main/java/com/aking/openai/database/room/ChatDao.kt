@@ -30,7 +30,7 @@ interface ChatDao {
 
     //编写自己的 SQL 查询(query)方法
     @Transaction
-    @Query("SELECT * FROM chats ORDER BY created")
+    @Query("SELECT * FROM chats ORDER BY created DESC")
     fun getAll(): List<ChatEntity>
 
 

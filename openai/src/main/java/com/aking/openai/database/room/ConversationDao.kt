@@ -27,7 +27,7 @@ interface ConversationDao {
 
     //编写自己的 SQL 查询(query)方法
     @Transaction
-    @Query("SELECT * FROM conversations ORDER BY timestamp")
+    @Query("SELECT * FROM conversations ORDER BY timestamp DESC")
     fun getAll(): List<ConversationEntity>
 
 

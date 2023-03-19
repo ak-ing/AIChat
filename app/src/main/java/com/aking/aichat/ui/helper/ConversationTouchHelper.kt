@@ -3,6 +3,7 @@ package com.aking.aichat.ui.helper
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.aking.aichat.ui.adapter.ConversationAdapter
+import com.aking.aichat.utl.VibratorManager
 
 /**
  * Created by Rick on 2023-03-08  14:47.
@@ -35,5 +36,6 @@ class ConversationTouchHelper(private val adapter: ConversationAdapter) :
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         adapter.onItemClickListener?.onDelete(adapter.currentList[viewHolder.adapterPosition])
+        VibratorManager.vibrator()
     }
 }
