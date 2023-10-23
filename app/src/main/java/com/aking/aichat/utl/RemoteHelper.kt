@@ -1,4 +1,4 @@
-package com.txznet.sdk.util
+package com.aking.aichat.utl
 
 import android.os.RemoteException
 import com.txznet.common.utils.CLASS_TAG

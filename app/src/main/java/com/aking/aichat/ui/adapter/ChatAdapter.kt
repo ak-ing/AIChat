@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.aking.aichat.databinding.*
-import com.aking.aichat.utl.CommonViewHolder
+import com.txznet.common.utils.CommonViewHolder
 import com.aking.openai.model.bean.GptDiffCallback
 import com.aking.openai.model.bean.GptText
 

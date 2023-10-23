@@ -99,6 +99,5 @@ object AlertWindowUtil {
 //        }
 //    }
 
-    fun isNull(any: Any?): Boolean = any == null
 
 }

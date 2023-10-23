@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.aking.openai.database.entity.ConversationCallback
 import com.aking.openai.database.entity.OwnerWithChats
 import com.aking.aichat.databinding.ItemConversationBinding
-import com.aking.aichat.utl.CommonViewHolder
+import com.txznet.common.utils.CommonViewHolder
 
 /**
  * Created by Rick on 2023-02-27  10:57.

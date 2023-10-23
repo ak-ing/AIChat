@@ -10,7 +10,7 @@ import com.aking.openai.model.bean.Message
 import com.aking.openai.network.MessageContext
 import com.txznet.common.utils.CLASS_TAG
 import com.txznet.common.utils.logV
-import com.txznet.sdk.util.RemoteHelper
+import com.aking.aichat.utl.RemoteHelper
 
 /**
  * Created by Rick on 2023-02-03  17:10.

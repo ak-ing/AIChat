@@ -180,7 +180,7 @@ fun View.bindClickDebouncing(
 ) {
     this.applyDebouncing(
         clickListener,
-        if (duration == 0L) OnDebouncingClickListener.Companion.DEBOUNCING_DEFAULT_VALUE else duration,
+        if (duration == 0L) OnDebouncingClickListener.DEBOUNCING_DEFAULT_VALUE else duration,
         withEnable,
         countdownCallback
     )

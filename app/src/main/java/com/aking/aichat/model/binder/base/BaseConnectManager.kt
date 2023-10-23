@@ -10,7 +10,7 @@ import com.aking.aichat.model.binder.listener.IServiceConnectListener
 import com.txznet.common.AppGlobal
 import com.txznet.common.utils.CLASS_TAG
 import com.txznet.common.utils.logV
-import com.txznet.sdk.util.RemoteHelper
+import com.aking.aichat.utl.RemoteHelper
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
